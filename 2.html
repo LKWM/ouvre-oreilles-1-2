@@ -104,7 +104,7 @@
 
   /* ── TYPOGRAPHY ── */
   .lesson-label {
-    font-size: clamp(0.65rem, 1.3vw, 0.85rem);
+    font-size: clamp(0.8rem, 1.8vw, 1.1rem);
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -112,14 +112,14 @@
     margin-bottom: 0.8vh;
   }
   .lesson-title {
-    font-size: clamp(1.4rem, 4vw, 3rem);
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
     font-weight: 900;
     color: var(--green-dark);
     text-align: center;
     line-height: 1.15;
   }
   .consigne {
-    font-size: clamp(0.75rem, 1.6vw, 1.05rem);
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
     font-weight: 700;
     color: var(--text-mid);
     text-align: center;
@@ -132,24 +132,24 @@
     background: var(--green-card);
     border: 0.15vh solid var(--border);
     border-radius: var(--radius);
-    padding: 2vh 2.5vw;
+    padding: 2.5vh 5vw;
     width: 100%;
-    max-width: 56vw;
+    max-width: 88vw;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1.5vw;
+    gap: 3vw;
     box-shadow: 0 0.4vh 1.5vh var(--shadow);
     margin-bottom: 2vh;
     flex-shrink: 0;
   }
   .card-text {
-    font-size: clamp(0.9rem, 2vw, 1.4rem);
+    font-size: clamp(1.1rem, 2.8vw, 1.7rem);
     font-weight: 700;
     color: var(--green-dark);
     text-align: center;
     font-family: 'Noto Sans KR', sans-serif;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   /* ── AUDIO BUTTON ── */
@@ -157,8 +157,8 @@
     background: var(--green-mid);
     border: none;
     border-radius: 50%;
-    width: clamp(2.2rem, 5vw, 3.5rem);
-    height: clamp(2.2rem, 5vw, 3.5rem);
+    width: clamp(3rem, 7vw, 4.5rem);
+    height: clamp(3rem, 7vw, 4.5rem);
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
@@ -172,17 +172,17 @@
   .options-list {
     display: flex;
     flex-direction: column;
-    gap: 1vh;
+    gap: 1.2vh;
     width: 100%;
-    max-width: 56vw;
+    max-width: 88vw;
   }
   .option-btn {
     background: #fff;
     border: 0.2vh solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 1.1vh 2vw;
+    padding: 1.4vh 3vw;
     font-family: 'Nunito', sans-serif;
-    font-size: clamp(0.72rem, 1.5vw, 1rem);
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
     font-weight: 600;
     color: var(--text-dark);
     cursor: pointer;
@@ -200,12 +200,12 @@
     display: flex;
     gap: 0.7vw;
     width: 100%;
-    max-width: 56vw;
+    max-width: 88vw;
     margin-top: 0.8vh;
     flex-wrap: wrap;
   }
   .hint-text {
-    font-size: clamp(0.6rem, 1.2vw, 0.82rem);
+    font-size: clamp(0.75rem, 1.6vw, 1rem);
     color: var(--text-light);
     font-style: italic;
     line-height: 1.4;
@@ -215,12 +215,12 @@
   /* ── PAGE 1 INTRO ── */
   #page1 { gap: 2.5vh; }
   .intro-deco {
-    width: clamp(3rem, 8vw, 6rem);
-    height: clamp(3rem, 8vw, 6rem);
+    width: clamp(4rem, 12vw, 8rem);
+    height: clamp(4rem, 12vw, 8rem);
     background: linear-gradient(135deg, var(--green-mid), var(--green-light));
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-size: clamp(2rem, 6vw, 4rem);
     box-shadow: 0 0.5vh 2vh var(--shadow);
     flex-shrink: 0;
   }
@@ -230,9 +230,9 @@
     color: #fff;
     border: none;
     border-radius: var(--radius);
-    padding: 1.4vh 6vw;
+    padding: 1.8vh 8vw;
     font-family: 'Nunito', sans-serif;
-    font-size: clamp(0.9rem, 2vw, 1.3rem);
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
     font-weight: 800;
     letter-spacing: 0.06em;
     cursor: pointer;
@@ -244,30 +244,30 @@
   /* ── PAGE 2 MATCHING ── */
   .match-area {
     display: flex;
-    gap: 2.5vw;
+    gap: 3vw;
     width: 100%;
-    max-width: 72vw;
+    max-width: 92vw;
     align-items: flex-start;
     justify-content: center;
   }
   .match-col {
     display: flex;
     flex-direction: column;
-    gap: 1vh;
+    gap: 1.2vh;
     flex: 1;
   }
   .match-item {
     background: #fff;
     border: 0.2vh solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 1vh 1.5vw;
-    font-size: clamp(0.72rem, 1.5vw, 1.05rem);
+    padding: 1.2vh 2vw;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
     font-weight: 700;
     text-align: center;
     cursor: pointer;
     transition: background 0.18s, border-color 0.18s, transform 0.1s;
     color: var(--text-dark);
-    min-height: 5.5vh;
+    min-height: 6vh;
     display: flex; align-items: center; justify-content: center;
   }
   .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
@@ -279,13 +279,13 @@
 
   /* ── PAGE 9 FILL BLANKS ── */
   .fill-sentence {
-    font-size: clamp(0.85rem, 1.8vw, 1.2rem);
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
     font-weight: 700;
     font-family: 'Noto Sans KR', sans-serif;
     color: var(--green-dark);
     text-align: center;
-    line-height: 2.2;
-    max-width: 56vw;
+    line-height: 2.4;
+    max-width: 88vw;
     margin-bottom: 1.5vh;
   }
   .blank-slot {
@@ -314,17 +314,17 @@
   .word-bank {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.7vh 0.8vw;
+    gap: 1vh 1.5vw;
     justify-content: center;
-    max-width: 62vw;
+    max-width: 90vw;
   }
   .word-chip {
     background: #fff;
     border: 0.2vh solid var(--border);
     border-radius: 2vw;
-    padding: 0.5vh 1.2vw;
+    padding: 0.7vh 2vw;
     font-family: 'Noto Sans KR', sans-serif;
-    font-size: clamp(0.65rem, 1.3vw, 0.9rem);
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
     font-weight: 700;
     cursor: pointer;
     color: var(--text-dark);
@@ -335,29 +335,29 @@
 
   /* ── OUTRO ── */
   #page11 { gap: 2.5vh; text-align: center; padding: 4vh 6vw; }
-  .outro-emoji { font-size: clamp(2rem, 6vw, 4.5rem); flex-shrink: 0; }
+  .outro-emoji { font-size: clamp(2.5rem, 8vw, 6rem); flex-shrink: 0; }
   .outro-title {
-    font-size: clamp(1.1rem, 2.8vw, 2rem);
+    font-size: clamp(1.3rem, 3.5vw, 2.5rem);
     font-weight: 900;
     color: var(--green-dark);
     line-height: 1.2;
   }
   .outro-body {
-    font-size: clamp(0.72rem, 1.5vw, 1rem);
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
     font-weight: 600;
     color: var(--text-mid);
-    line-height: 1.7;
-    max-width: 48vw;
+    line-height: 1.8;
+    max-width: 72vw;
   }
 
   /* feedback strip */
   .feedback {
-    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
     font-weight: 700;
     color: var(--accent2);
     text-align: center;
-    min-height: 2vh;
-    margin-top: 0.5vh;
+    min-height: 2.5vh;
+    margin-top: 0.8vh;
   }
   .feedback.good { color: var(--green-mid); }
 
@@ -368,6 +368,28 @@
     background: var(--green-light);
     border-radius: 1vw;
     flex-shrink: 0;
+  }
+
+  /* bottom-bar nav */
+  .bottom-bar .nav-btn {
+    background: var(--green-mid);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 1vh 4vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.03em;
+  }
+  .bottom-bar .nav-btn:hover { background: var(--green-dark); transform: scale(1.04); }
+  .bottom-bar .nav-btn:disabled { background: #b8dfc9; cursor: not-allowed; transform: none; opacity: 0.5; }
+  .bottom-bar .page-indicator {
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+    color: var(--text-mid);
+    font-weight: 700;
   }
 </style>
 </head>
@@ -382,7 +404,7 @@
     <div class="lesson-label">Ouvre tes oreilles : de niveau 1 à niveau 2</div>
     <div class="lesson-title">Leçon 2<br>Se présenter</div>
     <div class="divider"></div>
-    <button class="start-btn" onclick="goToPage(2)">Commencer</button>
+    <button class="start-btn" onclick="startLesson()">Commencer</button>
   </div>
 
   <!-- ═══════════════════════════════════════════
@@ -398,7 +420,7 @@
       <div class="feedback" id="matchFeedback"></div>
     </div>
     <div class="bottom-bar">
-      <button class="nav-btn" id="p2Prev" onclick="goToPage(1)">◀ Précédent</button>
+      <button class="nav-btn" id="p2Prev" disabled>◀ Précédent</button>
       <span class="page-indicator">2 / 9</span>
       <button class="nav-btn" id="p2Next" onclick="goToPage(3)" disabled>Suivant ▶</button>
     </div>
@@ -630,16 +652,17 @@
 
 <script>
 /* ════════════════════════════════════════════════
-   TONE.JS — SOUND ENGINE
-   동일한 패턴을 레슨 8 파일에서 그대로 적용
+   TONE.JS — SOUND ENGINE  (레슨 8 완전 동일 패턴)
 ════════════════════════════════════════════════ */
-let correctSound    = null;  // Sine synth  → 정답
-let errorSound      = null;  // Triangle synth → 오답
-let completionSynth = null;  // PolySynth → 레슨 완료
-let transitionSynth = null;  // 페이지 넘김 틱
+let correctSound    = null;
+let errorSound      = null;
+let completionSynth = null;
+let transitionSynth = null;
+let toneReady       = false;
+let audioTimeoutId  = null;  // 자동재생 타이머 ID (레슨 8: audioTimeoutId)
+let currentAudio    = null;  // 현재 재생 중인 Audio 객체
 
-let toneReady = false;
-
+// ── Tone 초기화 (레슨 8: startLesson → initAudioContext)
 async function initTone() {
   if (toneReady) return;
   await Tone.start();
@@ -654,73 +677,94 @@ async function initTone() {
   toneReady = true;
 }
 
-// 첫 인터랙션 시 AudioContext 활성화 (레슨 8 패턴)
-document.addEventListener('click', initTone, { once: true });
-
 function playSFX(type) {
   if (!toneReady) return;
-  if (type === 'sfx_correct' && correctSound)
-    correctSound.triggerAttackRelease('C5', '0.2s');
-  else if (type === 'sfx_wrong' && errorSound)
-    errorSound.triggerAttackRelease('C4', '0.1s');
+  if (type === 'sfx_correct' && correctSound) correctSound.triggerAttackRelease('C5', '0.2s');
+  else if (type === 'sfx_wrong' && errorSound) errorSound.triggerAttackRelease('C4', '0.1s');
 }
-
 function playTransition() {
-  if (!toneReady || !transitionSynth) return;
-  transitionSynth.triggerAttackRelease('C6', '0.05s');
+  if (toneReady && transitionSynth) transitionSynth.triggerAttackRelease('C6', '0.05s');
 }
-
 function playLessonComplete() {
-  if (!toneReady || !completionSynth) return;
-  completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n");
+  if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n");
 }
 
 /* ════════════════════════════════════════════════
-   오디오 URL 설정
-   ↓↓↓ 여기에 URL을 넣으면 됩니다 ↓↓↓
+   오디오 URL  (동일 파일은 변수 공유)
 ════════════════════════════════════════════════ */
-// ── 오디오 URL (동일 파일은 변수로 공유) ──────────────────
-const _A1  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547072/2-1_uluowx.mp3';   // 저는 김민수예요. 한국 사람이에요.
-const _A2  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547075/2-2_wjbgtw.mp3';   // 지금 서울에 있어요.
-const _A3  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547079/2-3_cvsdqq.mp3';   // 서울은행에서 일해요. 회사는 집에서 가까워요.
-const _ALL = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547083/lec%CC%A7on_2_cjmusp.wav'; // 전체 passage
+const _A1  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547072/2-1_uluowx.mp3';
+const _A2  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547075/2-2_wjbgtw.mp3';
+const _A3  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547079/2-3_cvsdqq.mp3';
+const _ALL = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547083/lec%CC%A7on_2_cjmusp.wav';
 
 const AUDIO = {
-  p3_audio:  _A1,   // Page 3 (audio only)   → 저는 김민수예요. 한국 사람이에요.
-  p4_audio:  _A2,   // Page 4 (audio only)   → 지금 서울에 있어요.
-  p5_audio:  _A3,   // Page 5 (audio only)   → 서울은행에서 일해요. 회사는 집에서 가까워요.
-  p6_audio:  _A1,   // Page 6 (text & audio) → 저는 김민수예요. 한국 사람이에요.
-  p7_audio:  _A2,   // Page 7 (text & audio) → 지금 서울에 있어요.
-  p8_audio:  _A3,   // Page 8 (text & audio) → 서울은행에서 일해요. 회사는 집에서 가까워요.
-  p9_audio:  _ALL,  // Page 9 (fill blanks)  → 전체 passage
-  p10_audio: _ALL,  // Page 10 (re-listen)   → 전체 passage
+  p3_audio:  _A1,   // Page 3  (audio only)   → 저는 김민수예요. 한국 사람이에요.
+  p4_audio:  _A2,   // Page 4  (audio only)   → 지금 서울에 있어요.
+  p5_audio:  _A3,   // Page 5  (audio only)   → 서울은행에서 일해요. 회사는 집에서 가까워요.
+  p6_audio:  _A1,   // Page 6  (text & audio) → 저는 김민수예요. 한국 사람이에요.
+  p7_audio:  _A2,   // Page 7  (text & audio) → 지금 서울에 있어요.
+  p8_audio:  _A3,   // Page 8  (text & audio) → 서울은행에서 일해요. 회사는 집에서 가까워요.
+  p9_audio:  _ALL,  // Page 9  (fill blanks)  → 전체 passage
+  p10_audio: _ALL,  // Page 10 (re-listen)    → 전체 passage
 };
 
-let currentAudio = null;
+// 페이지 번호 → 자동재생 키 매핑
+const PAGE_AUDIO_KEY = { 3:'p3_audio', 4:'p4_audio', 5:'p5_audio',
+                         6:'p6_audio', 7:'p7_audio', 8:'p8_audio',
+                         9:'p9_audio', 10:'p10_audio' };
 
+// 레슨 8의 playCardAudio()와 동일 구조
 function playAudio(key) {
   const src = AUDIO[key];
   if (!src) return;
-  if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+  stopAudio();
   currentAudio = new Audio(src);
-  currentAudio.play().catch(() => {});
+  const p = currentAudio.play();
+  if (p !== undefined) p.catch(e => console.warn('Audio:', e));
+}
+
+// 레슨 8의 changePage() 내 강제종료 처리와 동일
+function stopAudio() {
+  if (audioTimeoutId) { clearTimeout(audioTimeoutId); audioTimeoutId = null; }
+  if (currentAudio)   { currentAudio.pause(); currentAudio.currentTime = 0; currentAudio = null; }
 }
 
 /* ════════════════════════════════════════════════
    PAGE NAVIGATION
+   레슨 8 changePage() 패턴:
+   ① transitionSynth 틱  ② currentAudio 강제종료
+   ③ audioTimeoutId 클리어  ④ 페이지 전환
+   ⑤ 300ms 후 오디오 자동재생
 ════════════════════════════════════════════════ */
 let currentPage = 1;
-const TOTAL_PAGES = 11;
+
+// Commencer 버튼 — Tone 초기화를 await 한 뒤 전환 (타이밍 문제 해결)
+async function startLesson() {
+  await initTone();          // AudioContext 완전 준비
+  playTransition();          // 이제 Tone이 준비됐으므로 효과음 정상 재생
+  stopAudio();
+  document.getElementById('page1').classList.remove('active');
+  currentPage = 2;
+  document.getElementById('page2').classList.add('active');
+  // page2는 오디오 없으므로 자동재생 없음
+}
 
 function goToPage(n) {
-  playTransition();  // 페이지 넘김 효과음 (레슨 8 패턴)
-  document.getElementById('page' + currentPage).classList.remove('active');
+  playTransition();   // ① 효과음
+  stopAudio();        // ② + ③ 오디오 강제종료 & 타이머 클리어
+  document.getElementById('page' + currentPage).classList.remove('active');  // ④
   currentPage = n;
   document.getElementById('page' + n).classList.add('active');
+  // ⑤ 오디오 있는 페이지면 500ms 후 자동재생 1회
+  const key = PAGE_AUDIO_KEY[n];
+  if (key) {
+    audioTimeoutId = setTimeout(() => playAudio(key), 500);
+  }
 }
 
 function goToOutro() {
-  playLessonComplete();  // 레슨 완료 화음 (레슨 8 패턴: completionSynth ["C5","E5","G5","C6"])
+  stopAudio();
+  playLessonComplete();
   triggerLessonComplete();
   document.getElementById('page' + currentPage).classList.remove('active');
   currentPage = 11;
