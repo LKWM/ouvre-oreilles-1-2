@@ -292,10 +292,11 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 5em;
-    padding: 0.1em 0.5em;
+    width: 6em;                        /* 고정 너비 — 어떤 단어가 들어와도 크기 불변 */
+    height: 2em;
+    padding: 0.1em 0.3em;
     border-bottom: 0.22vh solid var(--green-mid);
-    border-radius: 0;
+    border-radius: 0.3em;
     background: transparent;
     cursor: pointer;
     font-family: 'Noto Sans KR', sans-serif;
@@ -305,11 +306,13 @@
     transition: background 0.15s;
     vertical-align: middle;
     margin: 0 0.15em;
+    overflow: hidden;
+    white-space: nowrap;
   }
-  .blank-slot.filled { color: var(--green-dark); background: #eaf8f1; border-radius: var(--radius-sm); border-bottom-color: var(--green-mid); }
-  .blank-slot.correct { background: #c8f5dc; border-color: var(--green-mid); }
+  .blank-slot.filled  { background: #eaf8f1; border-color: var(--green-mid); border-radius: var(--radius-sm); }
+  .blank-slot.correct { background: #c8f5dc; border-color: var(--green-mid); cursor: default; }
   .blank-slot.wrong   { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
-  .blank-slot.empty-indicator { border-bottom-color: #ccc; min-width: 4em; }
+  .blank-slot.selected-blank { outline: 0.2vh solid var(--accent); outline-offset: 1px; }
 
   .word-bank {
     display: flex;
@@ -401,7 +404,7 @@
   ═══════════════════════════════════════════ -->
   <div class="page active" id="page1">
     <div class="intro-deco">🎧</div>
-    <div class="lesson-label">Ouvre tes oreilles : de niveau 1 à niveau 2</div>
+    <div class="lesson-label" style="text-align:center;">Ouvre tes oreilles : de niveau 1 à niveau 2</div>
     <div class="lesson-title">Leçon 2<br>Se présenter</div>
     <div class="divider"></div>
     <button class="start-btn" onclick="startLesson()">Commencer</button>
@@ -427,15 +430,16 @@
   </div>
 
   <!-- ═══════════════════════════════════════════
-       PAGE 3 — MCQ AUDIO ONLY
+       PAGE 3 — MCQ CARD TEXT & AUDIO (text hidden → revealed on correct)
   ═══════════════════════════════════════════ -->
   <div class="page has-bar" id="page3">
     <div class="page-content">
       <div class="consigne">Choisissez la bonne réponse.</div>
-      <div class="card">
+      <div class="card" style="flex-direction:column; gap:1vh;">
         <button class="audio-btn" onclick="playAudio('p3_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
+        <div class="card-text" id="p3RevealText" style="visibility:hidden;">저는 김민수예요. 한국 사람이에요.</div>
       </div>
       <div class="options-list" id="p3Options">
         <button class="option-btn" onclick="checkMCQ(3,this,1)">1. Il parle de sa famille.</button>
@@ -452,15 +456,16 @@
   </div>
 
   <!-- ═══════════════════════════════════════════
-       PAGE 4 — MCQ AUDIO ONLY
+       PAGE 4 — MCQ CARD TEXT & AUDIO (text hidden → revealed on correct)
   ═══════════════════════════════════════════ -->
   <div class="page has-bar" id="page4">
     <div class="page-content">
       <div class="consigne">Choisissez la bonne réponse.</div>
-      <div class="card">
+      <div class="card" style="flex-direction:column; gap:1vh;">
         <button class="audio-btn" onclick="playAudio('p4_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
+        <div class="card-text" id="p4RevealText" style="visibility:hidden;">지금 서울에 있어요.</div>
       </div>
       <div class="options-list" id="p4Options">
         <button class="option-btn" onclick="checkMCQ(4,this,1)">1. Il parle de son lieu de naissance.</button>
@@ -477,15 +482,16 @@
   </div>
 
   <!-- ═══════════════════════════════════════════
-       PAGE 5 — MCQ AUDIO ONLY
+       PAGE 5 — MCQ CARD TEXT & AUDIO (text hidden → revealed on correct)
   ═══════════════════════════════════════════ -->
   <div class="page has-bar" id="page5">
     <div class="page-content">
       <div class="consigne">Choisissez la bonne réponse.</div>
-      <div class="card">
+      <div class="card" style="flex-direction:column; gap:1vh;">
         <button class="audio-btn" onclick="playAudio('p5_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
+        <div class="card-text" id="p5RevealText" style="visibility:hidden;">서울은행에서 일해요.<br>회사는 집에서 가까워요.</div>
       </div>
       <div class="options-list" id="p5Options">
         <button class="option-btn" onclick="checkMCQ(5,this,1)">1. Il parle de ses loisirs.</button>
@@ -585,9 +591,8 @@
   <div class="page has-bar" id="page9">
     <div class="page-content">
       <div class="consigne">Écoutez l'enregistrement et complétez les blancs.</div>
-      <!-- Card with text&audio — full sentence with blanks shown -->
-      <div class="card" style="flex-direction:column; align-items:center; max-width:62vw; padding:2vh 2vw;">
-        <button class="audio-btn" onclick="playAudio('p9_audio')" title="Écouter" style="margin-bottom:1.2vh;">
+      <div class="card" style="flex-direction:column; align-items:center; gap:1.2vh;">
+        <button class="audio-btn" onclick="playAudio('p9_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
         <div class="fill-sentence" id="fillSentence"></div>
@@ -607,27 +612,26 @@
   ═══════════════════════════════════════════ -->
   <div class="page has-bar" id="page10">
     <div class="page-content">
-      <div class="consigne">Réécoutez l'extrait et choisissez la bonne réponse.</div>
-      <div class="card" style="flex-direction:column; max-width:60vw; gap:1.2vh;">
+      <div class="consigne">Réécoutez l'extrait et choisissez l'affirmation correcte.</div>
+      <div class="card" style="flex-direction:column; gap:1.2vh;">
         <button class="audio-btn" onclick="playAudio('p10_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <div class="card-text" style="font-size:clamp(0.8rem,1.6vw,1.1rem);">저는 김민수예요. 한국 사람이에요. 지금 서울에 있어요. 서울은행에서 일해요. 회사는 집에서 가까워요.</div>
+        <div class="card-text">저는 김민수예요. 한국 사람이에요. 지금 서울에 있어요. 서울은행에서 일해요. 회사는 집에서 가까워요.</div>
       </div>
-      <div class="options-list" id="p10Options" style="max-width:60vw;">
+      <div class="options-list" id="p10Options">
         <button class="option-btn" onclick="checkMCQ(10,this,1)">1. 이 사람은 학생이에요.</button>
         <button class="option-btn" onclick="checkMCQ(10,this,2)">2. 이 사람은 서울에 살아요.</button>
         <button class="option-btn" onclick="checkMCQ(10,this,3)">3. 이 사람은 한국에 안 살아요.</button>
       </div>
-      <!-- Hidden hint, revealed on wrong -->
-      <div class="hint-row" id="p10Hint" style="max-width:60vw; display:none;">
+      <div class="hint-row" id="p10Hint" style="display:none;">
         <span class="hint-text">💡 1. Cette personne est un étudiant. &nbsp;|&nbsp; 2. Cette personne vit à Séoul. &nbsp;|&nbsp; 3. Cette personne n'habite pas en Corée.</span>
       </div>
       <div class="feedback" id="p10Feedback"></div>
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" onclick="goToPage(9)">◀ Précédent</button>
-      <span class="page-indicator" id="p10Indicator">— / —</span>
+      <span class="page-indicator">— / —</span>
       <button class="nav-btn" id="p10Next" onclick="goToOutro()" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -792,7 +796,10 @@ function checkMCQ(page, btn, chosen) {
     optionsEl.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
     feedbackEl.textContent = '✓ Correct !';
     feedbackEl.className = 'feedback good';
-    playSFX('sfx_correct');  // 정답 — Tone.js Sine C5
+    playSFX('sfx_correct');
+    // pages 3/4/5: reveal hidden Korean text
+    const revealEl = document.getElementById('p' + page + 'RevealText');
+    if (revealEl) revealEl.style.visibility = 'visible';
     if (page === 10) {
       document.getElementById('p10Next').disabled = false;
     } else {
@@ -954,36 +961,31 @@ function renderFillSentence() {
     } else {
       const idx = seg.blank;
       const slot = document.createElement('span');
-      slot.className = 'blank-slot';
       slot.dataset.idx = idx;
 
+      // 슬롯은 항상 동일한 고정 너비 — 내용에 따라 클래스만 변경
       if (fillValidated[idx]) {
+        slot.className = 'blank-slot correct';
         slot.textContent = fillAnswers[idx];
-        slot.classList.add('correct');
       } else if (fillAnswers[idx]) {
+        slot.className = 'blank-slot filled' + (idx === selectedBlank ? ' selected-blank' : '');
         slot.textContent = fillAnswers[idx];
-        slot.classList.add('filled');
-        if (idx === selectedBlank) slot.style.outline = '0.15vh solid var(--green-mid)';
-      } else {
-        slot.textContent = '\u00a0\u00a0\u00a0\u00a0\u00a0';
-        slot.classList.add('empty-indicator');
-        if (idx === selectedBlank) slot.style.outline = '0.15vh solid var(--accent)';
-      }
-
-      if (!fillValidated[idx]) {
         slot.addEventListener('click', () => {
-          // If filled, put word back and clear
-          if (fillAnswers[idx]) {
-            returnWordToBank(fillAnswers[idx]);
-            fillAnswers[idx] = null;
-            selectedBlank = idx;
-          } else {
-            selectedBlank = idx;
-          }
+          fillAnswers[idx] = null;
+          selectedBlank = idx;
+          renderFillSentence();
+          renderWordBank();
+        });
+      } else {
+        slot.className = 'blank-slot empty-indicator' + (idx === selectedBlank ? ' selected-blank' : '');
+        slot.textContent = '';  // 빈 슬롯 — 너비는 CSS width:6em 고정이므로 흔들림 없음
+        slot.addEventListener('click', () => {
+          selectedBlank = idx;
           renderFillSentence();
           renderWordBank();
         });
       }
+
       container.appendChild(slot);
     }
   });
