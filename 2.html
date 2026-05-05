@@ -394,6 +394,41 @@
     color: var(--text-mid);
     font-weight: 700;
   }
+
+  /* ── HINT AREA (항상 공간 확보, 흔들림 없음) ── */
+  .hint-area {
+    width: 100%;
+    max-width: 88vw;
+    min-height: 6vh;          /* 버튼+텍스트 최대 높이 미리 확보 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6vh;
+  }
+  .hint-btn {
+    background: none;
+    border: 0.15vh solid var(--green-light);
+    border-radius: var(--radius-sm);
+    padding: 0.5vh 2vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+    font-weight: 700;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .hint-btn:hover { background: var(--green-pale); }
+  .hint-text-box {
+    font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+    color: var(--text-mid);
+    font-style: italic;
+    text-align: center;
+    line-height: 1.5;
+    visibility: hidden;       /* 공간 확보된 채로 숨김 */
+    min-height: 2.5vh;
+  }
+  .hint-text-box.visible { visibility: visible; }
 </style>
 </head>
 <body>
@@ -424,7 +459,7 @@
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" id="p2Prev" disabled>◀ Précédent</button>
-      <span class="page-indicator">2 / 9</span>
+      <span class="page-indicator">2 / 11</span>
       <button class="nav-btn" id="p2Next" onclick="goToPage(3)" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -450,7 +485,7 @@
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" onclick="goToPage(2)">◀ Précédent</button>
-      <span class="page-indicator">3 / 9</span>
+      <span class="page-indicator">3 / 11</span>
       <button class="nav-btn" id="p3Next" onclick="goToPage(4)" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -476,7 +511,7 @@
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" onclick="goToPage(3)">◀ Précédent</button>
-      <span class="page-indicator">4 / 9</span>
+      <span class="page-indicator">4 / 11</span>
       <button class="nav-btn" id="p4Next" onclick="goToPage(5)" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -502,7 +537,7 @@
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" onclick="goToPage(4)">◀ Précédent</button>
-      <span class="page-indicator">5 / 9</span>
+      <span class="page-indicator">5 / 11</span>
       <button class="nav-btn" id="p5Next" onclick="goToPage(6)" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -528,7 +563,7 @@
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" onclick="goToPage(5)">◀ Précédent</button>
-      <span class="page-indicator">6 / 9</span>
+      <span class="page-indicator">6 / 11</span>
       <button class="nav-btn" id="p6Next" onclick="goToPage(7)" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -554,7 +589,7 @@
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" onclick="goToPage(6)">◀ Précédent</button>
-      <span class="page-indicator">7 / 9</span>
+      <span class="page-indicator">7 / 11</span>
       <button class="nav-btn" id="p7Next" onclick="goToPage(8)" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -580,7 +615,7 @@
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" onclick="goToPage(7)">◀ Précédent</button>
-      <span class="page-indicator">8 / 9</span>
+      <span class="page-indicator">8 / 11</span>
       <button class="nav-btn" id="p8Next" onclick="goToPage(9)" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -602,7 +637,7 @@
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" onclick="goToPage(8)">◀ Précédent</button>
-      <span class="page-indicator">9 / 9</span>
+      <span class="page-indicator">9 / 11</span>
       <button class="nav-btn" id="p9Next" onclick="goToPage(10)" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -624,14 +659,16 @@
         <button class="option-btn" onclick="checkMCQ(10,this,2)">2. 이 사람은 서울에 살아요.</button>
         <button class="option-btn" onclick="checkMCQ(10,this,3)">3. 이 사람은 한국에 안 살아요.</button>
       </div>
-      <div class="hint-row" id="p10Hint" style="display:none;">
-        <span class="hint-text">💡 1. Cette personne est un étudiant. &nbsp;|&nbsp; 2. Cette personne vit à Séoul. &nbsp;|&nbsp; 3. Cette personne n'habite pas en Corée.</span>
+      <!-- 힌트: 공간 항상 확보, 버튼 클릭 시만 텍스트 공개 -->
+      <div class="hint-area">
+        <button class="hint-btn" id="p10HintBtn" onclick="showHint(10)" style="visibility:hidden;">💡 Voir l'indice</button>
+        <div class="hint-text-box" id="p10HintText">1. Cette personne est un étudiant. &nbsp;|&nbsp; 2. Cette personne vit à Séoul. &nbsp;|&nbsp; 3. Cette personne n'habite pas en Corée.</div>
       </div>
       <div class="feedback" id="p10Feedback"></div>
     </div>
     <div class="bottom-bar">
       <button class="nav-btn" onclick="goToPage(9)">◀ Précédent</button>
-      <span class="page-indicator">— / —</span>
+      <span class="page-indicator">10 / 11</span>
       <button class="nav-btn" id="p10Next" onclick="goToOutro()" disabled>Suivant ▶</button>
     </div>
   </div>
@@ -775,6 +812,14 @@ function goToOutro() {
   document.getElementById('page11').classList.add('active');
 }
 
+
+function showHint(page) {
+  const btn  = document.getElementById('p' + page + 'HintBtn');
+  const text = document.getElementById('p' + page + 'HintText');
+  if (btn)  btn.style.visibility  = 'hidden';
+  if (text) text.classList.add('visible');
+}
+
 function triggerLessonComplete() {
   window.parent.postMessage({ type: 'lesson_complete' }, '*');
 }
@@ -811,7 +856,8 @@ function checkMCQ(page, btn, chosen) {
     feedbackEl.className = 'feedback';
     playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
     if (page === 10) {
-      document.getElementById('p10Hint').style.display = 'flex';
+      const hb = document.getElementById('p10HintBtn');
+      if (hb) hb.style.visibility = 'visible';
     }
     setTimeout(() => {
       btn.classList.remove('wrong');
