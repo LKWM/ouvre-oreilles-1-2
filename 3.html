@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 3 - Se saluer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  :root {
+    --green-dark:   #1a5c3a;
+    --green-mid:    #2d8653;
+    --green-light:  #4caf80;
+    --green-pale:   #d4f0e2;
+    --green-card:   #eaf8f1;
+    --accent:       #f5a623;
+    --accent2:      #ff6b6b;
+    --white:        #ffffff;
+    --text-dark:    #1a2e25;
+    --text-mid:     #3a5c46;
+    --text-light:   #7aaa8f;
+    --border:       #b8dfc9;
+    --shadow:       rgba(45,134,83,0.15);
+    --radius:       1.2vw;
+    --radius-sm:    0.7vw;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #e8f8f0 0%, #c8eedd 50%, #d8f4e8 100%);
+    color: var(--text-dark);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ── LESSON CONTAINER ── */
+  #lesson {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+
+  /* ── PAGE ── */
+  .page {
+    display: none;
+    width: 100%; height: 100%;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 3vh 4vw;
+  }
+  .page.active { display: flex; }
+
+  /* Pages with bottom bar use this */
+  .page.has-bar {
+    padding-bottom: 0;
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2vh 3vw;
+    background: rgba(255,255,255,0.7);
+    border-top: 0.15vh solid var(--border);
+    flex-shrink: 0;
+  }
+  .bottom-bar .nav-btn {
+    background: var(--green-mid);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.8vh 2.5vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.03em;
+  }
+  .bottom-bar .nav-btn:hover { background: var(--green-dark); transform: scale(1.04); }
+  .bottom-bar .nav-btn:disabled { background: #b8dfc9; cursor: not-allowed; transform: none; }
+  .bottom-bar .page-indicator {
+    font-size: clamp(0.7rem, 1.4vw, 0.95rem);
+    color: var(--text-mid);
+    font-weight: 700;
+  }
+
+  /* Page content area (above bar) */
+  .page-content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .lesson-label {
+    font-size: clamp(0.8rem, 1.8vw, 1.1rem);
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green-light);
+    margin-bottom: 0.8vh;
+  }
+  .lesson-title {
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--green-dark);
+    text-align: center;
+    line-height: 1.15;
+  }
+  .consigne {
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    font-weight: 700;
+    color: var(--text-mid);
+    text-align: center;
+    margin-bottom: 1.5vh;
+    letter-spacing: 0.01em;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--green-card);
+    border: 0.15vh solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5vh 5vw;
+    width: 100%;
+    max-width: 88vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3vw;
+    box-shadow: 0 0.4vh 1.5vh var(--shadow);
+    margin-bottom: 2vh;
+    flex-shrink: 0;
+  }
+  .card-text {
+    font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+    font-weight: 700;
+    color: var(--green-dark);
+    text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+  }
+
+  /* ── AUDIO BUTTON ── */
+  .audio-btn {
+    background: var(--green-mid);
+    border: none;
+    border-radius: 50%;
+    width: clamp(3rem, 7vw, 4.5rem);
+    height: clamp(3rem, 7vw, 4.5rem);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 0.3vh 0.8vh var(--shadow);
+  }
+  .audio-btn:hover { background: var(--green-dark); transform: scale(1.08); }
+  .audio-btn svg { width: 45%; height: 45%; fill: #fff; }
+
+  /* ── MCQ OPTIONS ── */
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2vh;
+    width: 100%;
+    max-width: 88vw;
+  }
+  .option-btn {
+    background: #fff;
+    border: 0.2vh solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.4vh 3vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.18s, border-color 0.18s, transform 0.1s;
+    line-height: 1.4;
+  }
+  .option-btn:hover { background: var(--green-pale); border-color: var(--green-light); }
+  .option-btn.correct { background: #c8f5dc; border-color: var(--green-mid); color: var(--green-dark); }
+  .option-btn.wrong   { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
+  .option-btn:disabled { cursor: not-allowed; }
+
+  /* hint */
+  .hint-row {
+    display: flex;
+    gap: 0.7vw;
+    width: 100%;
+    max-width: 88vw;
+    margin-top: 0.8vh;
+    flex-wrap: wrap;
+  }
+  .hint-text {
+    font-size: clamp(0.75rem, 1.6vw, 1rem);
+    color: var(--text-light);
+    font-style: italic;
+    line-height: 1.4;
+  }
+  .hint-text.revealed { color: var(--text-mid); }
+
+  /* ── PAGE 1 INTRO ── */
+  #page1 { gap: 2.5vh; }
+  .intro-deco {
+    width: clamp(4rem, 12vw, 8rem);
+    height: clamp(4rem, 12vw, 8rem);
+    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(2rem, 6vw, 4rem);
+    box-shadow: 0 0.5vh 2vh var(--shadow);
+    flex-shrink: 0;
+  }
+  .start-btn {
+    margin-top: 1vh;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 1.8vh 8vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    box-shadow: 0 0.5vh 1.8vh var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0.8vh 2.5vh rgba(45,134,83,0.3); }
+
+  /* ── PAGE 2 MATCHING ── */
+  .match-area {
+    display: flex;
+    gap: 3vw;
+    width: 100%;
+    max-width: 92vw;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .match-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2vh;
+    flex: 1;
+  }
+  .match-item {
+    background: #fff;
+    border: 0.2vh solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.2vh 2vw;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, transform 0.1s;
+    color: var(--text-dark);
+    min-height: 6vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
+  .match-item.fr { font-family: 'Nunito', sans-serif; }
+  .match-item:hover:not(.matched):not(.selected) { background: var(--green-pale); border-color: var(--green-light); }
+  .match-item.selected { background: #fff3cc; border-color: var(--accent); transform: scale(1.03); }
+  .match-item.matched { background: #c8f5dc; border-color: var(--green-mid); cursor: default; color: var(--green-dark); }
+  .match-item.wrong-flash { background: #ffe0e0; border-color: #ff6b6b; }
+
+  /* ── PAGE 9 FILL BLANKS ── */
+  .fill-sentence {
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--green-dark);
+    text-align: center;
+    line-height: 2.4;
+    max-width: 88vw;
+    margin-bottom: 1.5vh;
+  }
+  .blank-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 6em;                        /* 고정 너비 — 어떤 단어가 들어와도 크기 불변 */
+    height: 2em;
+    padding: 0.1em 0.3em;
+    border-bottom: 0.22vh solid var(--green-mid);
+    border-radius: 0.3em;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 1em;
+    font-weight: 700;
+    color: var(--green-dark);
+    transition: background 0.15s;
+    vertical-align: middle;
+    margin: 0 0.15em;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .blank-slot.filled  { background: #eaf8f1; border-color: var(--green-mid); border-radius: var(--radius-sm); }
+  .blank-slot.correct { background: #c8f5dc; border-color: var(--green-mid); cursor: default; }
+  .blank-slot.wrong   { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
+  .blank-slot.selected-blank { outline: 0.2vh solid var(--accent); outline-offset: 1px; }
+
+  .word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1vh 1.5vw;
+    justify-content: center;
+    max-width: 90vw;
+  }
+  .word-chip {
+    background: #fff;
+    border: 0.2vh solid var(--border);
+    border-radius: 2vw;
+    padding: 0.7vh 2vw;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--text-dark);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .word-chip:hover { background: var(--green-pale); border-color: var(--green-light); }
+  .word-chip.used { opacity: 0.3; cursor: default; pointer-events: none; }
+
+  /* ── OUTRO ── */
+  #page11 { gap: 2.5vh; text-align: center; padding: 4vh 6vw; }
+  .outro-emoji { font-size: clamp(2.5rem, 8vw, 6rem); flex-shrink: 0; }
+  .outro-title {
+    font-size: clamp(1.3rem, 3.5vw, 2.5rem);
+    font-weight: 900;
+    color: var(--green-dark);
+    line-height: 1.2;
+  }
+  .outro-body {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-weight: 600;
+    color: var(--text-mid);
+    line-height: 1.8;
+    max-width: 72vw;
+  }
+
+  /* feedback strip */
+  .feedback {
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+    font-weight: 700;
+    color: var(--accent2);
+    text-align: center;
+    min-height: 2.5vh;
+    margin-top: 0.8vh;
+  }
+  .feedback.good { color: var(--green-mid); }
+
+  /* divider */
+  .divider {
+    width: 4vw;
+    height: 0.3vh;
+    background: var(--green-light);
+    border-radius: 1vw;
+    flex-shrink: 0;
+  }
+
+  /* bottom-bar nav */
+  .bottom-bar .nav-btn {
+    background: var(--green-mid);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 1vh 4vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.03em;
+  }
+  .bottom-bar .nav-btn:hover { background: var(--green-dark); transform: scale(1.04); }
+  .bottom-bar .nav-btn:disabled { background: #b8dfc9; cursor: not-allowed; transform: none; opacity: 0.5; }
+  .bottom-bar .page-indicator {
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+    color: var(--text-mid);
+    font-weight: 700;
+  }
+
+  /* ── HINT AREA (항상 공간 확보, 흔들림 없음) ── */
+  .hint-area {
+    width: 100%;
+    max-width: 88vw;
+    min-height: 6vh;          /* 버튼+텍스트 최대 높이 미리 확보 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6vh;
+  }
+  .hint-btn {
+    background: none;
+    border: 0.15vh solid var(--green-light);
+    border-radius: var(--radius-sm);
+    padding: 0.5vh 2vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+    font-weight: 700;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .hint-btn:hover { background: var(--green-pale); }
+  .hint-text-box {
+    font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+    color: var(--text-mid);
+    font-style: italic;
+    text-align: center;
+    line-height: 1.5;
+    visibility: hidden;       /* 공간 확보된 채로 숨김 */
+    min-height: 2.5vh;
+  }
+  .hint-text-box.visible { visibility: visible; }
+</style>
+</head>
+<body>
+<div id="lesson">
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 1 — INTRO
+  ═══════════════════════════════════════════ -->
+  <div class="page active" id="page1">
+    <div class="intro-deco">🎧</div>
+    <div class="lesson-label" style="text-align:center;">Ouvre tes oreilles : de niveau 1 à niveau 2</div>
+    <div class="lesson-title">Leçon 3<br>Se saluer</div>
+    <div class="divider"></div>
+    <button class="start-btn" onclick="startLesson()">Commencer</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 2 — MATCHING KR↔FR
+  ═══════════════════════════════════════════ -->
+  <div class="page has-bar" id="page2">
+    <div class="page-content">
+      <div class="consigne">Associez chaque mot coréen à sa traduction française.</div>
+      <div class="match-area" id="matchArea">
+        <div class="match-col" id="krCol"></div>
+        <div class="match-col" id="frCol"></div>
+      </div>
+      <div class="feedback" id="matchFeedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" id="p2Prev" disabled>◀ Précédent</button>
+      <span class="page-indicator">2 / 11</span>
+      <button class="nav-btn" id="p2Next" onclick="goToPage(3)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 3 — MCQ CARD TEXT & AUDIO (text hidden → revealed on correct)
+  ═══════════════════════════════════════════ -->
+  <div class="page has-bar" id="page3">
+    <div class="page-content">
+      <div class="consigne">Choisissez la bonne réponse.</div>
+      <div class="card" style="flex-direction:column; gap:1vh;">
+        <button class="audio-btn" onclick="playAudio('p3_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <div class="card-text" id="p3RevealText" style="visibility:hidden;">가: 안녕하세요? 저는 김민수예요.<br>나: 저는 이수미예요. 반가워요.</div>
+      </div>
+      <div class="options-list" id="p3Options">
+        <button class="option-btn" onclick="checkMCQ(3,this,1)">1. Ils parlent de leur famille.</button>
+        <button class="option-btn" onclick="checkMCQ(3,this,2)">2. Ils se présentent mutuellement.</button>
+        <button class="option-btn" onclick="checkMCQ(3,this,3)">3. Ils parlent de leur journée.</button>
+      </div>
+      <div class="feedback" id="p3Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(2)">◀ Précédent</button>
+      <span class="page-indicator">3 / 11</span>
+      <button class="nav-btn" id="p3Next" onclick="goToPage(4)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 4 — MCQ CARD TEXT & AUDIO (text hidden → revealed on correct)
+  ═══════════════════════════════════════════ -->
+  <div class="page has-bar" id="page4">
+    <div class="page-content">
+      <div class="consigne">Choisissez la bonne réponse.</div>
+      <div class="card" style="flex-direction:column; gap:1vh;">
+        <button class="audio-btn" onclick="playAudio('p4_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <div class="card-text" id="p4RevealText" style="visibility:hidden;">수미 씨는 무슨 일을 하세요?<br>저는 한국 대학교 직원이에요. 민수 씨는요?</div>
+      </div>
+      <div class="options-list" id="p4Options">
+        <button class="option-btn" onclick="checkMCQ(4,this,1)">1. Ils parlent de leurs loisirs.</button>
+        <button class="option-btn" onclick="checkMCQ(4,this,2)">2. Ils parlent de leur lieu de naissance.</button>
+        <button class="option-btn" onclick="checkMCQ(4,this,3)">3. Ils parlent de leur profession.</button>
+      </div>
+      <div class="feedback" id="p4Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(3)">◀ Précédent</button>
+      <span class="page-indicator">4 / 11</span>
+      <button class="nav-btn" id="p4Next" onclick="goToPage(5)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 5 — MCQ CARD TEXT & AUDIO (text hidden → revealed on correct)
+  ═══════════════════════════════════════════ -->
+  <div class="page has-bar" id="page5">
+    <div class="page-content">
+      <div class="consigne">Choisissez la bonne réponse.</div>
+      <div class="card" style="flex-direction:column; gap:1vh;">
+        <button class="audio-btn" onclick="playAudio('p5_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <div class="card-text" id="p5RevealText" style="visibility:hidden;">저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
+      </div>
+      <div class="options-list" id="p5Options">
+        <button class="option-btn" onclick="checkMCQ(5,this,1)">1. Il parle de l'endroit où il travaille.</button>
+        <button class="option-btn" onclick="checkMCQ(5,this,2)">2. Il parle de ce qu'il apprend.</button>
+        <button class="option-btn" onclick="checkMCQ(5,this,3)">3. Il parle de ses vacances.</button>
+      </div>
+      <div class="feedback" id="p5Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(4)">◀ Précédent</button>
+      <span class="page-indicator">5 / 11</span>
+      <button class="nav-btn" id="p5Next" onclick="goToPage(6)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 6 — MCQ TEXT & AUDIO
+  ═══════════════════════════════════════════ -->
+  <div class="page has-bar" id="page6">
+    <div class="page-content">
+      <div class="consigne">Lisez le texte, écoutez chaque phrase et choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p6_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <div class="card-text">안녕하세요? 저는 김민수예요.<br>저는 이수미예요. 반가워요.</div>
+      </div>
+      <div class="options-list" id="p6Options">
+        <button class="option-btn" onclick="checkMCQ(6,this,1)">1. Bonjour, je m'appelle Kim Minsu. / Je m'appelle Lee Sumi. Enchanté.</button>
+        <button class="option-btn" onclick="checkMCQ(6,this,2)">2. Bonsoir, je m'appelle Kim Minsu. / Je m'appelle Lee Sumi. Enchantée.</button>
+        <button class="option-btn" onclick="checkMCQ(6,this,3)">3. Bonjour, je m'appelle Kim Minsu. / Moi aussi, je m'appelle Kim Minsu. Enchanté.</button>
+      </div>
+      <div class="feedback" id="p6Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(5)">◀ Précédent</button>
+      <span class="page-indicator">6 / 11</span>
+      <button class="nav-btn" id="p6Next" onclick="goToPage(7)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 7 — MCQ TEXT & AUDIO
+  ═══════════════════════════════════════════ -->
+  <div class="page has-bar" id="page7">
+    <div class="page-content">
+      <div class="consigne">Lisez le texte, écoutez chaque phrase et choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p7_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <div class="card-text">수미 씨는 무슨 일을 하세요?<br>저는 한국 대학교 직원이에요. 민수 씨는요?</div>
+      </div>
+      <div class="options-list" id="p7Options">
+        <button class="option-btn" onclick="checkMCQ(7,this,1)">1. Quel travail faites-vous ? / Je suis étudiante à l'Université de Corée. Et vous ?</button>
+        <button class="option-btn" onclick="checkMCQ(7,this,2)">2. Où habitez-vous ? / Je suis employée à l'Université de Corée. Et vous ?</button>
+        <button class="option-btn" onclick="checkMCQ(7,this,3)">3. Quel travail faites-vous ? / Je suis employée à l'Université de Corée. Et vous ?</button>
+      </div>
+      <div class="feedback" id="p7Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(6)">◀ Précédent</button>
+      <span class="page-indicator">7 / 11</span>
+      <button class="nav-btn" id="p7Next" onclick="goToPage(8)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 8 — MCQ TEXT & AUDIO
+  ═══════════════════════════════════════════ -->
+  <div class="page has-bar" id="page8">
+    <div class="page-content">
+      <div class="consigne">Lisez le texte, écoutez chaque phrase et choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p8_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <div class="card-text">저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
+      </div>
+      <div class="options-list" id="p8Options">
+        <button class="option-btn" onclick="checkMCQ(8,this,1)">1. Je suis étudiant à l'Université de Corée. J'étudie le coréen.</button>
+        <button class="option-btn" onclick="checkMCQ(8,this,2)">2. Je suis professeur à l'Université de Corée. J'étudie l'anglais.</button>
+        <button class="option-btn" onclick="checkMCQ(8,this,3)">3. Je suis étudiant à l'Université de Corée. J'étudie l'anglais.</button>
+      </div>
+      <div class="feedback" id="p8Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(7)">◀ Précédent</button>
+      <span class="page-indicator">8 / 11</span>
+      <button class="nav-btn" id="p8Next" onclick="goToPage(9)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 9 — FILL IN THE BLANKS
+  ═══════════════════════════════════════════ -->
+  <div class="page has-bar" id="page9">
+    <div class="page-content">
+      <div class="consigne">Écoutez l'enregistrement et complétez les blancs.</div>
+      <div class="card" style="flex-direction:column; align-items:center; gap:1.2vh;">
+        <button class="audio-btn" onclick="playAudio('p9_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <div class="fill-sentence" id="fillSentence"></div>
+      </div>
+      <div class="word-bank" id="wordBank"></div>
+      <div class="feedback" id="p9Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(8)">◀ Précédent</button>
+      <span class="page-indicator">9 / 11</span>
+      <button class="nav-btn" id="p9Next" onclick="goToPage(10)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 10 — RE-LISTEN MCQ
+  ═══════════════════════════════════════════ -->
+  <div class="page has-bar" id="page10">
+    <div class="page-content">
+      <div class="consigne">Réécoutez l'extrait et choisissez l'affirmation correcte.</div>
+      <div class="card" style="flex-direction:column; gap:1.2vh;">
+        <button class="audio-btn" onclick="playAudio('p10_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </button>
+        <div class="card-text">안녕하세요? 저는 김민수예요. / 저는 이수미예요. 반가워요. / 수미 씨는 무슨 일을 하세요? / 저는 한국 대학교 직원이에요. 민수 씨는요? / 저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
+      </div>
+      <div class="options-list" id="p10Options">
+        <button class="option-btn" onclick="checkMCQ(10,this,1)">1. 수미 씨는 학생이에요.</button>
+        <button class="option-btn" onclick="checkMCQ(10,this,2)">2. 민수 씨는 대학교에서 영어를 공부해요.</button>
+        <button class="option-btn" onclick="checkMCQ(10,this,3)">3. 수미 씨와 민수 씨는 같이 공부해요.</button>
+      </div>
+      <!-- 힌트: 공간 항상 확보, 버튼 클릭 시만 텍스트 공개 -->
+      <div class="hint-area">
+        <button class="hint-btn" id="p10HintBtn" onclick="showHint(10)" style="visibility:hidden;">💡 Voir l'indice</button>
+        <div class="hint-text-box" id="p10HintText">1. Sumi est étudiante. &nbsp;|&nbsp; 2. Minsu étudie l'anglais à l'université. &nbsp;|&nbsp; 3. Sumi et Minsu étudient ensemble.</div>
+      </div>
+      <div class="feedback" id="p10Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(9)">◀ Précédent</button>
+      <span class="page-indicator">10 / 11</span>
+      <button class="nav-btn" id="p10Next" onclick="goToOutro()" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PAGE 11 — OUTRO
+  ═══════════════════════════════════════════ -->
+  <div class="page" id="page11">
+    <div class="outro-emoji">🎉</div>
+    <div class="outro-title">Bravo, tu as terminé la leçon 3 !</div>
+    <div class="divider"></div>
+    <div class="outro-body">
+      Deux leçons en deux jours — tu es sur la bonne lancée.<br>
+      Tu commences à reconnaître des mots, des phrases, des échanges du quotidien.<br>
+      C'est exactement ça, progresser.<br><br>
+      À demain pour la leçon 4. 화이팅 ! 💪
+    </div>
+  </div>
+
+</div><!-- #lesson -->
+
+<script>
+/* ════════════════════════════════════════════════
+   TONE.JS — SOUND ENGINE  (레슨 8 완전 동일 패턴)
+════════════════════════════════════════════════ */
+let correctSound    = null;
+let errorSound      = null;
+let completionSynth = null;
+let transitionSynth = null;
+let toneReady       = false;
+let audioTimeoutId  = null;  // 자동재생 타이머 ID (레슨 8: audioTimeoutId)
+let currentAudio    = null;  // 현재 재생 중인 Audio 객체
+
+// ── Tone 초기화 (레슨 8: startLesson → initAudioContext)
+async function initTone() {
+  if (toneReady) return;
+  await Tone.start();
+  correctSound    = new Tone.Synth({ oscillator: { type: 'sine'     } }).toDestination();
+  errorSound      = new Tone.Synth({ oscillator: { type: 'triangle' } }).toDestination();
+  completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+  transitionSynth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope:   { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
+  }).toDestination();
+  transitionSynth.volume.value = -15;
+  toneReady = true;
+}
+
+function playSFX(type) {
+  if (!toneReady) return;
+  if (type === 'sfx_correct' && correctSound) correctSound.triggerAttackRelease('C5', '0.2s');
+  else if (type === 'sfx_wrong' && errorSound) errorSound.triggerAttackRelease('C4', '0.1s');
+}
+function playTransition() {
+  if (toneReady && transitionSynth) transitionSynth.triggerAttackRelease('C6', '0.05s');
+}
+function playLessonComplete() {
+  if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n");
+}
+
+/* ════════════════════════════════════════════════
+   오디오 URL  (동일 파일은 변수 공유)
+════════════════════════════════════════════════ */
+const _A1  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777883316/3-1_qymz20.mp3';
+const _A2  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777883320/3-2_bvad9g.mp3';
+const _A3  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777883325/3-3_k52pgv.mp3';
+const _ALL = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777883329/lec%CC%A7on_3_cjduoy.wav';
+
+const AUDIO = {
+  p3_audio:  _A1,   // Page 3  (text&audio hidden) → part 1
+  p4_audio:  _A2,   // Page 4  (text&audio hidden) → part 2
+  p5_audio:  _A3,   // Page 5  (text&audio hidden) → part 3
+  p6_audio:  _A1,   // Page 6  (text & audio)      → part 1
+  p7_audio:  _A2,   // Page 7  (text & audio)      → part 2
+  p8_audio:  _A3,   // Page 8  (text & audio)      → part 3
+  p9_audio:  _ALL,  // Page 9  (fill blanks)        → 전체 passage
+  p10_audio: _ALL,  // Page 10 (re-listen)          → 전체 passage
+};
+
+// 페이지 번호 → 자동재생 키 매핑
+const PAGE_AUDIO_KEY = { 3:'p3_audio', 4:'p4_audio', 5:'p5_audio',
+                         6:'p6_audio', 7:'p7_audio', 8:'p8_audio',
+                         9:'p9_audio', 10:'p10_audio' };
+
+// 레슨 8의 playCardAudio()와 동일 구조
+function playAudio(key) {
+  const src = AUDIO[key];
+  if (!src) return;
+  stopAudio();
+  currentAudio = new Audio(src);
+  const p = currentAudio.play();
+  if (p !== undefined) p.catch(e => console.warn('Audio:', e));
+}
+
+// 레슨 8의 changePage() 내 강제종료 처리와 동일
+function stopAudio() {
+  if (audioTimeoutId) { clearTimeout(audioTimeoutId); audioTimeoutId = null; }
+  if (currentAudio)   { currentAudio.pause(); currentAudio.currentTime = 0; currentAudio = null; }
+}
+
+/* ════════════════════════════════════════════════
+   PAGE NAVIGATION
+   레슨 8 changePage() 패턴:
+   ① transitionSynth 틱  ② currentAudio 강제종료
+   ③ audioTimeoutId 클리어  ④ 페이지 전환
+   ⑤ 300ms 후 오디오 자동재생
+════════════════════════════════════════════════ */
+let currentPage = 1;
+
+// Commencer 버튼 — Tone 초기화를 await 한 뒤 전환 (타이밍 문제 해결)
+async function startLesson() {
+  await initTone();          // AudioContext 완전 준비
+  playTransition();          // 이제 Tone이 준비됐으므로 효과음 정상 재생
+  stopAudio();
+  document.getElementById('page1').classList.remove('active');
+  currentPage = 2;
+  document.getElementById('page2').classList.add('active');
+  // page2는 오디오 없으므로 자동재생 없음
+}
+
+function goToPage(n) {
+  playTransition();   // ① 효과음
+  stopAudio();        // ② + ③ 오디오 강제종료 & 타이머 클리어
+  document.getElementById('page' + currentPage).classList.remove('active');  // ④
+  currentPage = n;
+  document.getElementById('page' + n).classList.add('active');
+  // ⑤ 오디오 있는 페이지면 500ms 후 자동재생 1회
+  const key = PAGE_AUDIO_KEY[n];
+  if (key) {
+    audioTimeoutId = setTimeout(() => playAudio(key), 500);
+  }
+}
+
+function goToOutro() {
+  stopAudio();
+  playLessonComplete();
+  triggerLessonComplete();
+  document.getElementById('page' + currentPage).classList.remove('active');
+  currentPage = 11;
+  document.getElementById('page11').classList.add('active');
+}
+
+
+function showHint(page) {
+  const btn  = document.getElementById('p' + page + 'HintBtn');
+  const text = document.getElementById('p' + page + 'HintText');
+  if (btn)  btn.style.visibility  = 'hidden';
+  if (text) text.classList.add('visible');
+}
+
+function triggerLessonComplete() {
+  window.parent.postMessage({ type: 'lesson_complete' }, '*');
+}
+
+/* ════════════════════════════════════════════════
+   MCQ — PAGES 3-8, 10
+   Correct answers:
+   p3=2, p4=3, p5=2, p6=1, p7=3, p8=3, p10=2
+════════════════════════════════════════════════ */
+const MCQ_ANSWERS = { 3:2, 4:3, 5:2, 6:1, 7:3, 8:3, 10:2 };
+
+function checkMCQ(page, btn, chosen) {
+  const correct = MCQ_ANSWERS[page];
+  const optionsEl = document.getElementById('p' + page + 'Options');
+  const feedbackEl = document.getElementById('p' + page + 'Feedback');
+
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    optionsEl.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    feedbackEl.textContent = '✓ Correct !';
+    feedbackEl.className = 'feedback good';
+    playSFX('sfx_correct');
+    // pages 3/4/5: reveal hidden Korean text
+    const revealEl = document.getElementById('p' + page + 'RevealText');
+    if (revealEl) revealEl.style.visibility = 'visible';
+    if (page === 10) {
+      document.getElementById('p10Next').disabled = false;
+    } else {
+      document.getElementById('p' + page + 'Next').disabled = false;
+    }
+  } else {
+    btn.classList.add('wrong');
+    feedbackEl.textContent = '✗ Réessayez !';
+    feedbackEl.className = 'feedback';
+    playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
+    if (page === 10) {
+      const hb = document.getElementById('p10HintBtn');
+      if (hb) hb.style.visibility = 'visible';
+    }
+    setTimeout(() => {
+      btn.classList.remove('wrong');
+      feedbackEl.textContent = '';
+    }, 700);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   PAGE 2 — MATCHING
+════════════════════════════════════════════════ */
+const MATCH_PAIRS = [
+  { kr: '안녕하다', fr: 'être poli' },
+  { kr: '반갑다',   fr: 'être content de rencontrer' },
+  { kr: '무슨',     fr: 'quel' },
+  { kr: '일',       fr: 'travail' },
+  { kr: '직원',     fr: 'employé' },
+  { kr: '학생',     fr: 'étudiant' },
+  { kr: '공부하다', fr: 'étudier' },
+];
+
+let matchState = {
+  selectedKR: null,
+  selectedFR: null,
+  matchedCount: 0,
+};
+
+function initMatchPage() {
+  matchState = { selectedKR: null, selectedFR: null, matchedCount: 0 };
+  const krCol = document.getElementById('krCol');
+  const frCol = document.getElementById('frCol');
+  krCol.innerHTML = ''; frCol.innerHTML = '';
+
+  // Shuffle FR
+  const frShuffled = [...MATCH_PAIRS].sort(() => Math.random() - 0.5);
+
+  MATCH_PAIRS.forEach(pair => {
+    const krEl = document.createElement('div');
+    krEl.className = 'match-item kr';
+    krEl.textContent = pair.kr;
+    krEl.dataset.value = pair.kr;
+    krEl.addEventListener('click', () => selectMatchItem('kr', krEl));
+    krCol.appendChild(krEl);
+  });
+
+  frShuffled.forEach(pair => {
+    const frEl = document.createElement('div');
+    frEl.className = 'match-item fr';
+    frEl.textContent = pair.fr;
+    frEl.dataset.value = pair.fr;
+    frEl.addEventListener('click', () => selectMatchItem('fr', frEl));
+    frCol.appendChild(frEl);
+  });
+}
+
+function selectMatchItem(side, el) {
+  if (el.classList.contains('matched')) return;
+
+  // Deselect same-side prev
+  if (side === 'kr') {
+    if (matchState.selectedKR) matchState.selectedKR.classList.remove('selected');
+    el.classList.add('selected');
+    matchState.selectedKR = el;
+  } else {
+    if (matchState.selectedFR) matchState.selectedFR.classList.remove('selected');
+    el.classList.add('selected');
+    matchState.selectedFR = el;
+  }
+
+  // Check pair
+  if (matchState.selectedKR && matchState.selectedFR) {
+    const krVal = matchState.selectedKR.dataset.value;
+    const frVal = matchState.selectedFR.dataset.value;
+    const pair = MATCH_PAIRS.find(p => p.kr === krVal);
+
+    if (pair && pair.fr === frVal) {
+      // Correct pair
+      matchState.selectedKR.classList.remove('selected');
+      matchState.selectedFR.classList.remove('selected');
+      matchState.selectedKR.classList.add('matched');
+      matchState.selectedFR.classList.add('matched');
+      matchState.selectedKR = null;
+      matchState.selectedFR = null;
+      playSFX('sfx_correct');  // 정답 — Tone.js Sine C5
+      matchState.matchedCount++;
+      if (matchState.matchedCount === MATCH_PAIRS.length) {
+        // 전체 완료 시 화음
+        if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");
+        document.getElementById('matchFeedback').textContent = '✓ Parfait, tout est correct !';
+        document.getElementById('matchFeedback').className = 'feedback good';
+        document.getElementById('p2Next').disabled = false;
+      }
+    } else {
+      // Wrong — flash, reset both
+      matchState.selectedKR.classList.add('wrong-flash');
+      matchState.selectedFR.classList.add('wrong-flash');
+      playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
+      const kr = matchState.selectedKR;
+      const fr = matchState.selectedFR;
+      matchState.selectedKR = null;
+      matchState.selectedFR = null;
+      setTimeout(() => {
+        kr.classList.remove('wrong-flash', 'selected');
+        fr.classList.remove('wrong-flash', 'selected');
+      }, 600);
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════
+   PAGE 9 — FILL IN THE BLANKS
+   안녕[0]? 저는 김민수예요. / 저는 이수미[1]. [2]. /
+   수미 씨는 무슨 [3] 하세요? / 저는 한국 대학교 [4]이에요. 민수 씨[5]? /
+   저는 한국 대학교 [6]이에요. 영어를 공부[7].
+   Answers: 하세요 / 예요 / 반가워요 / 일을 / 직원 / 는요 / 학생 / 해요
+════════════════════════════════════════════════ */
+const FILL_BLANKS = ['하세요', '예요', '반가워요', '일을', '직원', '는요', '학생', '해요'];
+const WORD_BANK_WORDS = [
+  '이세요','예요','일을','는요','이에요','한생','하세요','은요','반가워요','반가와요','일은','직원','지권','학생','해요'
+];
+
+const FILL_SEGMENTS = [
+  { text: '안녕' }, { blank: 0 }, { text: '? 저는 김민수예요.' },
+  { text: ' / 저는 이수미' }, { blank: 1 }, { text: '. ' }, { blank: 2 }, { text: '.' },
+  { text: ' / 수미 씨는 무슨 ' }, { blank: 3 }, { text: ' 하세요?' },
+  { text: ' / 저는 한국 대학교 ' }, { blank: 4 }, { text: '이에요. 민수 씨' }, { blank: 5 }, { text: '?' },
+  { text: ' / 저는 한국 대학교 ' }, { blank: 6 }, { text: '이에요. 영어를 공부' }, { blank: 7 }, { text: '.' },
+];
+
+let fillAnswers   = new Array(8).fill(null);
+let fillValidated = new Array(8).fill(false);
+let selectedBlank = null;
+
+function initFillPage() {
+  fillAnswers   = new Array(8).fill(null);
+  fillValidated = new Array(8).fill(false);
+  selectedBlank = null;
+  renderFillSentence();
+  renderWordBank();
+  document.getElementById('p9Feedback').textContent = '';
+}
+
+function renderFillSentence() {
+  const container = document.getElementById('fillSentence');
+  container.innerHTML = '';
+  FILL_SEGMENTS.forEach(seg => {
+    if (seg.text !== undefined) {
+      container.appendChild(document.createTextNode(seg.text));
+    } else {
+      const idx = seg.blank;
+      const slot = document.createElement('span');
+      slot.dataset.idx = idx;
+
+      // 슬롯은 항상 동일한 고정 너비 — 내용에 따라 클래스만 변경
+      if (fillValidated[idx]) {
+        slot.className = 'blank-slot correct';
+        slot.textContent = fillAnswers[idx];
+      } else if (fillAnswers[idx]) {
+        slot.className = 'blank-slot filled' + (idx === selectedBlank ? ' selected-blank' : '');
+        slot.textContent = fillAnswers[idx];
+        slot.addEventListener('click', () => {
+          fillAnswers[idx] = null;
+          selectedBlank = idx;
+          renderFillSentence();
+          renderWordBank();
+        });
+      } else {
+        slot.className = 'blank-slot empty-indicator' + (idx === selectedBlank ? ' selected-blank' : '');
+        slot.textContent = '';  // 빈 슬롯 — 너비는 CSS width:6em 고정이므로 흔들림 없음
+        slot.addEventListener('click', () => {
+          selectedBlank = idx;
+          renderFillSentence();
+          renderWordBank();
+        });
+      }
+
+      container.appendChild(slot);
+    }
+  });
+}
+
+function renderWordBank() {
+  const bank = document.getElementById('wordBank');
+  bank.innerHTML = '';
+  WORD_BANK_WORDS.forEach(word => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip';
+    chip.textContent = word;
+    // Check if used
+    const used = fillAnswers.some(a => a === word && FILL_BLANKS[fillAnswers.indexOf(a)] !== undefined);
+    // More precise: check if word is placed in any non-validated slot
+    const usedInSlot = fillAnswers.findIndex(a => a === word);
+    if (usedInSlot !== -1) {
+      chip.classList.add('used');
+    } else {
+      chip.addEventListener('click', () => placeWord(word));
+    }
+    bank.appendChild(chip);
+  });
+}
+
+function returnWordToBank(word) {
+  // Just re-render bank without the word being in fillAnswers
+  // Since fillAnswers will be updated before render
+}
+
+function placeWord(word) {
+  if (selectedBlank === null) {
+    // Select first empty blank
+    const first = fillAnswers.findIndex((a, i) => a === null && !fillValidated[i]);
+    if (first === -1) return;
+    selectedBlank = first;
+  }
+  if (fillValidated[selectedBlank]) return;
+
+  // If blank already has a word, return it
+  if (fillAnswers[selectedBlank]) {
+    // word returns to bank automatically when re-rendered
+  }
+
+  fillAnswers[selectedBlank] = word;
+
+  // Check if correct
+  if (word === FILL_BLANKS[selectedBlank]) {
+    fillValidated[selectedBlank] = true;
+    playSFX('sfx_correct');  // 정답 — Tone.js Sine C5
+    // Move selectedBlank to next empty
+    let next = fillAnswers.findIndex((a, i) => i > selectedBlank && !fillValidated[i] && a === null);
+    if (next === -1) next = fillAnswers.findIndex((a, i) => !fillValidated[i] && a === null);
+    selectedBlank = next === -1 ? null : next;
+    // Check all done
+    if (fillValidated.every(v => v)) {
+      if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");  // 전체 완료 화음
+      document.getElementById('p9Feedback').textContent = '✓ Excellent, tout est correct !';
+      document.getElementById('p9Feedback').className = 'feedback good';
+      document.getElementById('p9Next').disabled = false;
+      selectedBlank = null;
+    }
+  } else {
+    // Wrong — flash then reset this blank
+    renderFillSentence();
+    renderWordBank();
+    playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
+    setTimeout(() => {
+      fillAnswers[selectedBlank !== null ? selectedBlank : fillAnswers.lastIndexOf(word)] = null;
+      // find the slot that has this wrong word
+      const wrongIdx = fillAnswers.indexOf(word);
+      // actually since we set it, find it by iterating
+      for (let i = 0; i < fillAnswers.length; i++) {
+        if (fillAnswers[i] === word && !fillValidated[i]) {
+          fillAnswers[i] = null;
+          break;
+        }
+      }
+      renderFillSentence();
+      renderWordBank();
+    }, 700);
+    return;
+  }
+
+  renderFillSentence();
+  renderWordBank();
+}
+
+/* ════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════ */
+initMatchPage();
+initFillPage();
+
+// Re-init match page when navigating to p2 (in case of back)
+// We track if p2 already completed
+let p2Done = false;
+const origGoToPage = goToPage;
+
+</script>
+</body>
+</html>
