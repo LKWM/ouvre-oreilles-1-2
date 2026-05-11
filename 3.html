@@ -4,7 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leçon 3 - Se saluer</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js">
+// 페이지 이탈/탭 전환/전원차단 시 오디오 강제 종료
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopAudio();
+});
+window.addEventListener('pagehide', () => stopAudio());
+window.addEventListener('beforeunload', () => stopAudio());
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
@@ -255,6 +262,7 @@
     flex-direction: column;
     gap: 1.2vh;
     flex: 1;
+    align-items: stretch;
   }
   .match-item {
     background: #fff;
@@ -267,7 +275,8 @@
     cursor: pointer;
     transition: background 0.18s, border-color 0.18s, transform 0.1s;
     color: var(--text-dark);
-    min-height: 6vh;
+    flex: 1;
+    min-height: 5vh;
     display: flex; align-items: center; justify-content: center;
   }
   .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
@@ -284,9 +293,10 @@
     font-family: 'Noto Sans KR', sans-serif;
     color: var(--green-dark);
     text-align: center;
-    line-height: 2.4;
+    line-height: 2.6;
     max-width: 88vw;
     margin-bottom: 1.5vh;
+    text-align: left;
   }
   .blank-slot {
     display: inline-flex;
@@ -400,6 +410,7 @@
     width: 100%;
     max-width: 88vw;
     min-height: 6vh;          /* 버튼+텍스트 최대 높이 미리 확보 */
+    margin-top: 1.5vh;        /* 선택지와 간격 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -474,7 +485,7 @@
         <button class="audio-btn" onclick="playAudio('p3_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <div class="card-text" id="p3RevealText" style="visibility:hidden;">가: 안녕하세요? 저는 김민수예요.<br>나: 저는 이수미예요. 반가워요.</div>
+        <div class="card-text" id="p3RevealText" style="visibility:hidden;"><span style="color:#2563eb;">안녕하세요? 저는 김민수예요.</span><br><span style="color:#dc2626;">저는 이수미예요. 반가워요.</span></div>
       </div>
       <div class="options-list" id="p3Options">
         <button class="option-btn" onclick="checkMCQ(3,this,1)">1. Ils parlent de leur famille.</button>
@@ -500,7 +511,7 @@
         <button class="audio-btn" onclick="playAudio('p4_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <div class="card-text" id="p4RevealText" style="visibility:hidden;">수미 씨는 무슨 일을 하세요?<br>저는 한국 대학교 직원이에요. 민수 씨는요?</div>
+        <div class="card-text" id="p4RevealText" style="visibility:hidden;"><span style="color:#2563eb;">수미 씨는 무슨 일을 하세요?</span><br><span style="color:#dc2626;">저는 한국 대학교 직원이에요. 민수 씨는요?</span></div>
       </div>
       <div class="options-list" id="p4Options">
         <button class="option-btn" onclick="checkMCQ(4,this,1)">1. Ils parlent de leurs loisirs.</button>
@@ -526,7 +537,7 @@
         <button class="audio-btn" onclick="playAudio('p5_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <div class="card-text" id="p5RevealText" style="visibility:hidden;">저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
+        <div class="card-text" id="p5RevealText" style="visibility:hidden;"><span style="color:#2563eb;">저는 한국 대학교 학생이에요. 영어를 공부해요.</span></div>
       </div>
       <div class="options-list" id="p5Options">
         <button class="option-btn" onclick="checkMCQ(5,this,1)">1. Il parle de l'endroit où il travaille.</button>
@@ -552,7 +563,7 @@
         <button class="audio-btn" onclick="playAudio('p6_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <div class="card-text">안녕하세요? 저는 김민수예요.<br>저는 이수미예요. 반가워요.</div>
+        <div class="card-text"><span style="color:#2563eb;">안녕하세요? 저는 김민수예요.</span><br><span style="color:#dc2626;">저는 이수미예요. 반가워요.</span></div>
       </div>
       <div class="options-list" id="p6Options">
         <button class="option-btn" onclick="checkMCQ(6,this,1)">1. Bonjour, je m'appelle Kim Minsu. / Je m'appelle Lee Sumi. Enchanté.</button>
@@ -578,7 +589,7 @@
         <button class="audio-btn" onclick="playAudio('p7_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <div class="card-text">수미 씨는 무슨 일을 하세요?<br>저는 한국 대학교 직원이에요. 민수 씨는요?</div>
+        <div class="card-text"><span style="color:#2563eb;">수미 씨는 무슨 일을 하세요?</span><br><span style="color:#dc2626;">저는 한국 대학교 직원이에요. 민수 씨는요?</span></div>
       </div>
       <div class="options-list" id="p7Options">
         <button class="option-btn" onclick="checkMCQ(7,this,1)">1. Quel travail faites-vous ? / Je suis étudiante à l'Université de Corée. Et vous ?</button>
@@ -604,7 +615,7 @@
         <button class="audio-btn" onclick="playAudio('p8_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <div class="card-text">저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
+        <div class="card-text"><span style="color:#2563eb;">저는 한국 대학교 학생이에요. 영어를 공부해요.</span></div>
       </div>
       <div class="options-list" id="p8Options">
         <button class="option-btn" onclick="checkMCQ(8,this,1)">1. Je suis étudiant à l'Université de Corée. J'étudie le coréen.</button>
@@ -652,7 +663,7 @@
         <button class="audio-btn" onclick="playAudio('p10_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <div class="card-text">안녕하세요? 저는 김민수예요. / 저는 이수미예요. 반가워요. / 수미 씨는 무슨 일을 하세요? / 저는 한국 대학교 직원이에요. 민수 씨는요? / 저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
+        <div class="card-text" style="font-size:clamp(0.85rem,1.8vw,1.1rem); color:#1a2e25;">안녕하세요? 저는 김민수예요.<br>저는 이수미예요. 반가워요.<br>수미 씨는 무슨 일을 하세요?<br>저는 한국 대학교 직원이에요. 민수 씨는요?<br>저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
       </div>
       <div class="options-list" id="p10Options">
         <button class="option-btn" onclick="checkMCQ(10,this,1)">1. 수미 씨는 학생이에요.</button>
@@ -661,7 +672,7 @@
       </div>
       <!-- 힌트: 공간 항상 확보, 버튼 클릭 시만 텍스트 공개 -->
       <div class="hint-area">
-        <button class="hint-btn" id="p10HintBtn" onclick="showHint(10)" style="visibility:hidden;">💡 Voir l'indice</button>
+        <button class="hint-btn" id="p10HintBtn" onclick="showHint(10)">💡 Voir l'indice</button>
         <div class="hint-text-box" id="p10HintText">1. Sumi est étudiante. &nbsp;|&nbsp; 2. Minsu étudie l'anglais à l'université. &nbsp;|&nbsp; 3. Sumi et Minsu étudient ensemble.</div>
       </div>
       <div class="feedback" id="p10Feedback"></div>
@@ -855,8 +866,7 @@ function checkMCQ(page, btn, chosen) {
     feedbackEl.className = 'feedback';
     playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
     if (page === 10) {
-      const hb = document.getElementById('p10HintBtn');
-      if (hb) hb.style.visibility = 'visible';
+      // 힌트버튼은 처음부터 보임 — 오답 시 아무 추가 동작 없음
     }
     setTimeout(() => {
       btn.classList.remove('wrong');
@@ -869,7 +879,6 @@ function checkMCQ(page, btn, chosen) {
    PAGE 2 — MATCHING
 ════════════════════════════════════════════════ */
 const MATCH_PAIRS = [
-  { kr: '안녕하다', fr: 'être poli' },
   { kr: '반갑다',   fr: 'être content de rencontrer' },
   { kr: '무슨',     fr: 'quel' },
   { kr: '일',       fr: 'travail' },
@@ -979,11 +988,11 @@ const WORD_BANK_WORDS = [
 ];
 
 const FILL_SEGMENTS = [
-  { text: '안녕' }, { blank: 0 }, { text: '? 저는 김민수예요.' },
-  { text: ' / 저는 이수미' }, { blank: 1 }, { text: '. ' }, { blank: 2 }, { text: '.' },
-  { text: ' / 수미 씨는 무슨 ' }, { blank: 3 }, { text: ' 하세요?' },
-  { text: ' / 저는 한국 대학교 ' }, { blank: 4 }, { text: '이에요. 민수 씨' }, { blank: 5 }, { text: '?' },
-  { text: ' / 저는 한국 대학교 ' }, { blank: 6 }, { text: '이에요. 영어를 공부' }, { blank: 7 }, { text: '.' },
+  { html: '<span style="color:#2563eb;">안녕' }, { blank: 0 }, { html: '? 저는 김민수예요.</span>' },
+  { html: '<br><span style="color:#dc2626;">저는 이수미' }, { blank: 1 }, { html: '. ' }, { blank: 2 }, { html: '.</span>' },
+  { html: '<br><span style="color:#2563eb;">수미 씨는 무슨 ' }, { blank: 3 }, { html: ' 하세요?</span>' },
+  { html: '<br><span style="color:#dc2626;">저는 한국 대학교 ' }, { blank: 4 }, { html: '이에요. 민수 씨' }, { blank: 5 }, { html: '?</span>' },
+  { html: '<br><span style="color:#2563eb;">저는 한국 대학교 ' }, { blank: 6 }, { html: '이에요. 영어를 공부' }, { blank: 7 }, { html: '.</span>' },
 ];
 
 let fillAnswers   = new Array(8).fill(null);
@@ -1003,7 +1012,12 @@ function renderFillSentence() {
   const container = document.getElementById('fillSentence');
   container.innerHTML = '';
   FILL_SEGMENTS.forEach(seg => {
-    if (seg.text !== undefined) {
+    if (seg.html !== undefined) {
+      const span = document.createElement('span');
+      span.innerHTML = seg.html;
+      // flatten: append children individually to keep inline flow
+      while (span.firstChild) container.appendChild(span.firstChild);
+    } else if (seg.text !== undefined) {
       container.appendChild(document.createTextNode(seg.text));
     } else {
       const idx = seg.blank;
