@@ -4,7 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leçon 2 - Se présenter</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js">
+// 페이지 이탈/탭 전환/전원차단 시 오디오 강제 종료
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopAudio();
+});
+window.addEventListener('pagehide', () => stopAudio());
+window.addEventListener('beforeunload', () => stopAudio());
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
@@ -400,6 +407,7 @@
     width: 100%;
     max-width: 88vw;
     min-height: 6vh;          /* 버튼+텍스트 최대 높이 미리 확보 */
+    margin-top: 1.5vh;        /* 선택지와 간격 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -661,7 +669,7 @@
       </div>
       <!-- 힌트: 공간 항상 확보, 버튼 클릭 시만 텍스트 공개 -->
       <div class="hint-area">
-        <button class="hint-btn" id="p10HintBtn" onclick="showHint(10)" style="visibility:hidden;">💡 Voir l'indice</button>
+        <button class="hint-btn" id="p10HintBtn" onclick="showHint(10)">💡 Voir l'indice</button>
         <div class="hint-text-box" id="p10HintText">1. Cette personne est un étudiant. &nbsp;|&nbsp; 2. Cette personne vit à Séoul. &nbsp;|&nbsp; 3. Cette personne n'habite pas en Corée.</div>
       </div>
       <div class="feedback" id="p10Feedback"></div>
@@ -856,8 +864,7 @@ function checkMCQ(page, btn, chosen) {
     feedbackEl.className = 'feedback';
     playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
     if (page === 10) {
-      const hb = document.getElementById('p10HintBtn');
-      if (hb) hb.style.visibility = 'visible';
+      // 힌트버튼은 처음부터 보임 — 오답 시 아무 추가 동작 없음
     }
     setTimeout(() => {
       btn.classList.remove('wrong');
