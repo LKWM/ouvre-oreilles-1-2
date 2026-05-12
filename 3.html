@@ -167,13 +167,15 @@ window.addEventListener('beforeunload', () => stopAudio());
     width: clamp(3rem, 7vw, 4.5rem);
     height: clamp(3rem, 7vw, 4.5rem);
     display: flex; align-items: center; justify-content: center;
+    padding: 0;              /* 아이콘 완전 중앙 */
+    line-height: 1;
     cursor: pointer;
     flex-shrink: 0;
     transition: background 0.2s, transform 0.15s;
     box-shadow: 0 0.3vh 0.8vh var(--shadow);
   }
   .audio-btn:hover { background: var(--green-dark); transform: scale(1.08); }
-  .audio-btn svg { width: 45%; height: 45%; fill: #fff; }
+  .audio-btn svg { width: 45%; height: 45%; fill: #fff; display: block; }
 
   /* ── MCQ OPTIONS ── */
   .options-list {
@@ -254,7 +256,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     gap: 3vw;
     width: 100%;
     max-width: 92vw;
-    align-items: flex-start;
+    align-items: stretch;   /* 양 컬럼 높이 동일 */
     justify-content: center;
   }
   .match-col {
@@ -262,7 +264,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     flex-direction: column;
     gap: 1.2vh;
     flex: 1;
-    align-items: stretch;
+    align-items: stretch;  /* 카드가 컬럼 너비 전체 차지 */
   }
   .match-item {
     background: #fff;
@@ -275,8 +277,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     cursor: pointer;
     transition: background 0.18s, border-color 0.18s, transform 0.1s;
     color: var(--text-dark);
-    flex: 1;
-    min-height: 5vh;
+    flex: 1;              /* 컬럼 내 모든 카드 동일 높이 */
     display: flex; align-items: center; justify-content: center;
   }
   .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
@@ -363,15 +364,18 @@ window.addEventListener('beforeunload', () => stopAudio());
     max-width: 72vw;
   }
 
-  /* feedback strip */
+  /* feedback strip — 공간 항상 확보, 흔들림 없음 */
   .feedback {
     font-size: clamp(0.8rem, 1.6vw, 1rem);
     font-weight: 700;
     color: var(--accent2);
     text-align: center;
-    min-height: 2.5vh;
+    height: 2.5vh;           /* 고정 높이로 공간 확보 */
     margin-top: 0.8vh;
+    visibility: hidden;      /* 기본: 공간 점유하되 안 보임 */
+    flex-shrink: 0;
   }
+  .feedback.show { visibility: visible; }
   .feedback.good { color: var(--green-mid); }
 
   /* divider */
@@ -483,7 +487,7 @@ window.addEventListener('beforeunload', () => stopAudio());
       <div class="consigne">Choisissez la bonne réponse.</div>
       <div class="card" style="flex-direction:column; gap:1vh;">
         <button class="audio-btn" onclick="playAudio('p3_audio')" title="Écouter">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <div class="card-text" id="p3RevealText" style="visibility:hidden;"><span style="color:#2563eb;">안녕하세요? 저는 김민수예요.</span><br><span style="color:#dc2626;">저는 이수미예요. 반가워요.</span></div>
       </div>
@@ -509,7 +513,7 @@ window.addEventListener('beforeunload', () => stopAudio());
       <div class="consigne">Choisissez la bonne réponse.</div>
       <div class="card" style="flex-direction:column; gap:1vh;">
         <button class="audio-btn" onclick="playAudio('p4_audio')" title="Écouter">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <div class="card-text" id="p4RevealText" style="visibility:hidden;"><span style="color:#2563eb;">수미 씨는 무슨 일을 하세요?</span><br><span style="color:#dc2626;">저는 한국 대학교 직원이에요. 민수 씨는요?</span></div>
       </div>
@@ -535,7 +539,7 @@ window.addEventListener('beforeunload', () => stopAudio());
       <div class="consigne">Choisissez la bonne réponse.</div>
       <div class="card" style="flex-direction:column; gap:1vh;">
         <button class="audio-btn" onclick="playAudio('p5_audio')" title="Écouter">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <div class="card-text" id="p5RevealText" style="visibility:hidden;"><span style="color:#2563eb;">저는 한국 대학교 학생이에요. 영어를 공부해요.</span></div>
       </div>
@@ -561,7 +565,7 @@ window.addEventListener('beforeunload', () => stopAudio());
       <div class="consigne">Lisez le texte, écoutez chaque phrase et choisissez la traduction qui correspond.</div>
       <div class="card" style="flex-direction:column; gap:0.8vh;">
         <button class="audio-btn" onclick="playAudio('p6_audio')" title="Écouter">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <div class="card-text"><span style="color:#2563eb;">안녕하세요? 저는 김민수예요.</span><br><span style="color:#dc2626;">저는 이수미예요. 반가워요.</span></div>
       </div>
@@ -587,7 +591,7 @@ window.addEventListener('beforeunload', () => stopAudio());
       <div class="consigne">Lisez le texte, écoutez chaque phrase et choisissez la traduction qui correspond.</div>
       <div class="card" style="flex-direction:column; gap:0.8vh;">
         <button class="audio-btn" onclick="playAudio('p7_audio')" title="Écouter">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <div class="card-text"><span style="color:#2563eb;">수미 씨는 무슨 일을 하세요?</span><br><span style="color:#dc2626;">저는 한국 대학교 직원이에요. 민수 씨는요?</span></div>
       </div>
@@ -613,7 +617,7 @@ window.addEventListener('beforeunload', () => stopAudio());
       <div class="consigne">Lisez le texte, écoutez chaque phrase et choisissez la traduction qui correspond.</div>
       <div class="card" style="flex-direction:column; gap:0.8vh;">
         <button class="audio-btn" onclick="playAudio('p8_audio')" title="Écouter">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <div class="card-text"><span style="color:#2563eb;">저는 한국 대학교 학생이에요. 영어를 공부해요.</span></div>
       </div>
@@ -639,7 +643,7 @@ window.addEventListener('beforeunload', () => stopAudio());
       <div class="consigne">Écoutez l'enregistrement et complétez les blancs.</div>
       <div class="card" style="flex-direction:column; align-items:center; gap:1.2vh;">
         <button class="audio-btn" onclick="playAudio('p9_audio')" title="Écouter">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <div class="fill-sentence" id="fillSentence"></div>
       </div>
@@ -661,7 +665,7 @@ window.addEventListener('beforeunload', () => stopAudio());
       <div class="consigne">Réécoutez l'extrait et choisissez l'affirmation correcte.</div>
       <div class="card" style="flex-direction:column; gap:1.2vh;">
         <button class="audio-btn" onclick="playAudio('p10_audio')" title="Écouter">
-          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <div class="card-text" style="font-size:clamp(0.85rem,1.8vw,1.1rem); color:#1a2e25;">안녕하세요? 저는 김민수예요.<br>저는 이수미예요. 반가워요.<br>수미 씨는 무슨 일을 하세요?<br>저는 한국 대학교 직원이에요. 민수 씨는요?<br>저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
       </div>
@@ -691,7 +695,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     <div class="outro-emoji">🎉</div>
     <div class="outro-title">Bravo, tu as terminé la leçon 3 !</div>
     <div class="divider"></div>
-    <div class="outro-body">
+    <div class="outro-body" style="text-align:center;">
       Deux leçons en deux jours — tu es sur la bonne lancée.<br>
       Tu commences à reconnaître des mots, des phrases, des échanges du quotidien.<br>
       C'est exactement ça, progresser.<br><br>
@@ -850,7 +854,7 @@ function checkMCQ(page, btn, chosen) {
     btn.classList.add('correct');
     optionsEl.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
     feedbackEl.textContent = '✓ Correct !';
-    feedbackEl.className = 'feedback good';
+    feedbackEl.className = 'feedback good show';
     playSFX('sfx_correct');
     // pages 3/4/5: reveal hidden Korean text
     const revealEl = document.getElementById('p' + page + 'RevealText');
@@ -863,7 +867,7 @@ function checkMCQ(page, btn, chosen) {
   } else {
     btn.classList.add('wrong');
     feedbackEl.textContent = '✗ Réessayez !';
-    feedbackEl.className = 'feedback';
+    feedbackEl.className = 'feedback show';
     playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
     if (page === 10) {
       // 힌트버튼은 처음부터 보임 — 오답 시 아무 추가 동작 없음
@@ -871,6 +875,7 @@ function checkMCQ(page, btn, chosen) {
     setTimeout(() => {
       btn.classList.remove('wrong');
       feedbackEl.textContent = '';
+      feedbackEl.classList.remove('show');
     }, 700);
   }
 }
@@ -955,7 +960,7 @@ function selectMatchItem(side, el) {
         // 전체 완료 시 화음
         if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");
         document.getElementById('matchFeedback').textContent = '✓ Parfait, tout est correct !';
-        document.getElementById('matchFeedback').className = 'feedback good';
+        document.getElementById('matchFeedback').className = 'feedback good show';
         document.getElementById('p2Next').disabled = false;
       }
     } else {
@@ -1105,7 +1110,7 @@ function placeWord(word) {
     if (fillValidated.every(v => v)) {
       if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");  // 전체 완료 화음
       document.getElementById('p9Feedback').textContent = '✓ Excellent, tout est correct !';
-      document.getElementById('p9Feedback').className = 'feedback good';
+      document.getElementById('p9Feedback').className = 'feedback good show';
       document.getElementById('p9Next').disabled = false;
       selectedBlank = null;
     }
