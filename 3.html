@@ -275,7 +275,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     font-weight: 700;
     text-align: center;
     cursor: pointer;
-    transition: background 0.18s, border-color 0.18s, transform 0.1s;
+    transition: background 0.18s, border-color 0.18s;
     color: var(--text-dark);
     flex: 1;              /* 컬럼 내 모든 카드 동일 높이 */
     display: flex; align-items: center; justify-content: center;
@@ -283,7 +283,7 @@ window.addEventListener('beforeunload', () => stopAudio());
   .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
   .match-item.fr { font-family: 'Nunito', sans-serif; }
   .match-item:hover:not(.matched):not(.selected) { background: var(--green-pale); border-color: var(--green-light); }
-  .match-item.selected { background: #fff3cc; border-color: var(--accent); transform: scale(1.03); }
+  .match-item.selected { background: #fff3cc; border-color: var(--accent); }
   .match-item.matched { background: #c8f5dc; border-color: var(--green-mid); cursor: default; color: var(--green-dark); }
   .match-item.wrong-flash { background: #ffe0e0; border-color: #ff6b6b; }
 
@@ -667,7 +667,7 @@ window.addEventListener('beforeunload', () => stopAudio());
         <button class="audio-btn" onclick="playAudio('p10_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <div class="card-text" style="font-size:clamp(0.85rem,1.8vw,1.1rem); color:#1a2e25;">안녕하세요? 저는 김민수예요.<br>저는 이수미예요. 반가워요.<br>수미 씨는 무슨 일을 하세요?<br>저는 한국 대학교 직원이에요. 민수 씨는요?<br>저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
+        <div class="card-text" style="font-size:clamp(0.85rem,1.8vw,1.1rem);"><span style="color:#2563eb;">안녕하세요? 저는 김민수예요.</span><br><span style="color:#dc2626;">저는 이수미예요. 반가워요.</span><br><span style="color:#2563eb;">수미 씨는 무슨 일을 하세요?</span><br><span style="color:#dc2626;">저는 한국 대학교 직원이에요. 민수 씨는요?</span><br><span style="color:#2563eb;">저는 한국 대학교 학생이에요. 영어를 공부해요.</span></div>
       </div>
       <div class="options-list" id="p10Options">
         <button class="option-btn" onclick="checkMCQ(10,this,1)">1. 수미 씨는 학생이에요.</button>
@@ -845,12 +845,16 @@ function triggerLessonComplete() {
 ════════════════════════════════════════════════ */
 const MCQ_ANSWERS = { 3:2, 4:3, 5:2, 6:1, 7:3, 8:3, 10:2 };
 
+const MCQ_SOLVED = new Set();
+
 function checkMCQ(page, btn, chosen) {
+  if (MCQ_SOLVED.has(page)) return;
   const correct = MCQ_ANSWERS[page];
   const optionsEl = document.getElementById('p' + page + 'Options');
   const feedbackEl = document.getElementById('p' + page + 'Feedback');
 
   if (chosen === correct) {
+    MCQ_SOLVED.add(page);
     btn.classList.add('correct');
     optionsEl.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
     feedbackEl.textContent = '✓ Correct !';
@@ -993,11 +997,11 @@ const WORD_BANK_WORDS = [
 ];
 
 const FILL_SEGMENTS = [
-  { html: '<span style="color:#2563eb;">안녕' }, { blank: 0 }, { html: '? 저는 김민수예요.</span>' },
-  { html: '<br><span style="color:#dc2626;">저는 이수미' }, { blank: 1 }, { html: '. ' }, { blank: 2 }, { html: '.</span>' },
-  { html: '<br><span style="color:#2563eb;">수미 씨는 무슨 ' }, { blank: 3 }, { html: ' 하세요?</span>' },
-  { html: '<br><span style="color:#dc2626;">저는 한국 대학교 ' }, { blank: 4 }, { html: '이에요. 민수 씨' }, { blank: 5 }, { html: '?</span>' },
-  { html: '<br><span style="color:#2563eb;">저는 한국 대학교 ' }, { blank: 6 }, { html: '이에요. 영어를 공부' }, { blank: 7 }, { html: '.</span>' },
+  { html: '안녕' }, { blank: 0 }, { html: '? 저는 김민수예요.' },
+  { html: '<br>저는 이수미' }, { blank: 1 }, { html: '. ' }, { blank: 2 }, { html: '.' },
+  { html: '<br>수미 씨는 무슨 ' }, { blank: 3 }, { html: ' 하세요?' },
+  { html: '<br>저는 한국 대학교 ' }, { blank: 4 }, { html: '이에요. 민수 씨' }, { blank: 5 }, { html: '?' },
+  { html: '<br>저는 한국 대학교 ' }, { blank: 6 }, { html: '이에요. 영어를 공부' }, { blank: 7 }, { html: '.' },
 ];
 
 let fillAnswers   = new Array(8).fill(null);
