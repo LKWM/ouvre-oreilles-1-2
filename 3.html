@@ -303,7 +303,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 6em;                        /* 고정 너비 — 어떤 단어가 들어와도 크기 불변 */
+    min-width: 1.8em;                  /* 글자 수에 따라 JS에서 width 동적 설정 */
     height: 2em;
     padding: 0.1em 0.3em;
     border-bottom: 0.22vh solid var(--green-mid);
@@ -1032,6 +1032,9 @@ function renderFillSentence() {
       const idx = seg.blank;
       const slot = document.createElement('span');
       slot.dataset.idx = idx;
+      // 정답 글자 수에 비례한 너비 설정 (1자당 1.6em, 최소 1.8em)
+      const charCount = FILL_BLANKS[idx].length;
+      slot.style.width = Math.max(1.8, charCount * 1.6) + 'em';
 
       // 슬롯은 항상 동일한 고정 너비 — 내용에 따라 클래스만 변경
       if (fillValidated[idx]) {
