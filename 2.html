@@ -275,7 +275,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     font-weight: 700;
     text-align: center;
     cursor: pointer;
-    transition: background 0.18s, border-color 0.18s, transform 0.1s;
+    transition: background 0.18s, border-color 0.18s;
     color: var(--text-dark);
     flex: 1;              /* 컬럼 내 모든 카드 동일 높이 */
     display: flex; align-items: center; justify-content: center;
@@ -283,7 +283,7 @@ window.addEventListener('beforeunload', () => stopAudio());
   .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
   .match-item.fr { font-family: 'Nunito', sans-serif; }
   .match-item:hover:not(.matched):not(.selected) { background: var(--green-pale); border-color: var(--green-light); }
-  .match-item.selected { background: #fff3cc; border-color: var(--accent); transform: scale(1.03); }
+  .match-item.selected { background: #fff3cc; border-color: var(--accent); }
   .match-item.matched { background: #c8f5dc; border-color: var(--green-mid); cursor: default; color: var(--green-dark); }
   .match-item.wrong-flash { background: #ffe0e0; border-color: #ff6b6b; }
 
@@ -845,12 +845,16 @@ function triggerLessonComplete() {
 ════════════════════════════════════════════════ */
 const MCQ_ANSWERS = { 3:3, 4:2, 5:3, 6:1, 7:2, 8:3, 10:2 };
 
+const MCQ_SOLVED = new Set();
+
 function checkMCQ(page, btn, chosen) {
+  if (MCQ_SOLVED.has(page)) return;
   const correct = MCQ_ANSWERS[page];
   const optionsEl = document.getElementById('p' + page + 'Options');
   const feedbackEl = document.getElementById('p' + page + 'Feedback');
 
   if (chosen === correct) {
+    MCQ_SOLVED.add(page);
     btn.classList.add('correct');
     optionsEl.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
     feedbackEl.textContent = '✓ Correct !';
