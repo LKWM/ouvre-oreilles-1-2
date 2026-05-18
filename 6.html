@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 6 - Mes passions</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  :root {
+    --green-dark:   #1a5c3a;
+    --green-mid:    #2d8653;
+    --green-light:  #4caf80;
+    --green-pale:   #d4f0e2;
+    --green-card:   #eaf8f1;
+    --accent:       #f5a623;
+    --accent2:      #ff6b6b;
+    --white:        #ffffff;
+    --text-dark:    #1a2e25;
+    --text-mid:     #3a5c46;
+    --text-light:   #7aaa8f;
+    --border:       #b8dfc9;
+    --shadow:       rgba(45,134,83,0.15);
+    --radius:       1.2vw;
+    --radius-sm:    0.7vw;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #e8f8f0 0%, #c8eedd 50%, #d8f4e8 100%);
+    color: var(--text-dark);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #lesson {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+
+  .page {
+    display: none;
+    width: 100%; height: 100%;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 3vh 4vw;
+  }
+  .page.active { display: flex; }
+  .page.has-bar { padding-bottom: 0; }
+
+  .bottom-bar {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2vh 3vw;
+    background: rgba(255,255,255,0.7);
+    border-top: 0.15vh solid var(--border);
+    flex-shrink: 0;
+  }
+  .bottom-bar .nav-btn {
+    background: var(--green-mid);
+    color: #fff; border: none;
+    border-radius: var(--radius-sm);
+    padding: 1vh 4vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    font-weight: 700; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.03em;
+  }
+  .bottom-bar .nav-btn:hover { background: var(--green-dark); transform: scale(1.04); }
+  .bottom-bar .nav-btn:disabled { background: #b8dfc9; cursor: not-allowed; transform: none; opacity: 0.5; }
+  .bottom-bar .page-indicator {
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+    color: var(--text-mid); font-weight: 700;
+  }
+
+  .page-content {
+    flex: 1; width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+
+  .lesson-label {
+    font-size: clamp(0.8rem, 1.8vw, 1.1rem);
+    font-weight: 800; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--green-light);
+    margin-bottom: 0.8vh;
+  }
+  .lesson-title {
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: 900; color: var(--green-dark);
+    text-align: center; line-height: 1.15;
+  }
+  .consigne {
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    font-weight: 700; color: var(--text-mid);
+    text-align: center; margin-bottom: 1.5vh; letter-spacing: 0.01em;
+  }
+
+  .card {
+    background: var(--green-card);
+    border: 0.15vh solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5vh 5vw;
+    width: 100%; max-width: 88vw;
+    display: flex; align-items: center; justify-content: center;
+    gap: 3vw;
+    box-shadow: 0 0.4vh 1.5vh var(--shadow);
+    margin-bottom: 2vh; flex-shrink: 0;
+  }
+  .card-text {
+    font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+    font-weight: 700; color: var(--green-dark);
+    text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+  }
+
+  .audio-btn {
+    background: var(--green-mid);
+    border: none; border-radius: 50%;
+    width: clamp(3rem, 7vw, 4.5rem);
+    height: clamp(3rem, 7vw, 4.5rem);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; line-height: 1;
+    cursor: pointer; flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 0.3vh 0.8vh var(--shadow);
+  }
+  .audio-btn:hover { background: var(--green-dark); transform: scale(1.08); }
+  .audio-btn svg { width: 45%; height: 45%; fill: #fff; display: block; }
+
+  .options-list {
+    display: flex; flex-direction: column;
+    gap: 1.2vh; width: 100%; max-width: 88vw;
+  }
+  .option-btn {
+    background: #fff;
+    border: 0.2vh solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.4vh 3vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
+    font-weight: 600; color: var(--text-dark);
+    cursor: pointer; text-align: left;
+    transition: background 0.18s, border-color 0.18s;
+    line-height: 1.4;
+  }
+  .option-btn:hover { background: var(--green-pale); border-color: var(--green-light); }
+  .option-btn.correct { background: #c8f5dc; border-color: var(--green-mid); color: var(--green-dark); }
+  .option-btn.wrong   { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
+  .option-btn:disabled { cursor: not-allowed; }
+
+  /* INTRO */
+  #page1 { gap: 2.5vh; }
+  .intro-deco {
+    width: clamp(4rem, 12vw, 8rem); height: clamp(4rem, 12vw, 8rem);
+    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(2rem, 6vw, 4rem);
+    box-shadow: 0 0.5vh 2vh var(--shadow); flex-shrink: 0;
+  }
+  .start-btn {
+    margin-top: 1vh;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: #fff; border: none; border-radius: var(--radius);
+    padding: 1.8vh 8vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: 800; letter-spacing: 0.06em;
+    cursor: pointer;
+    box-shadow: 0 0.5vh 1.8vh var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0.8vh 2.5vh rgba(45,134,83,0.3); }
+
+  /* MATCHING */
+  .match-area {
+    display: flex; gap: 3vw;
+    width: 100%; max-width: 92vw;
+    align-items: stretch; justify-content: center;
+  }
+  .match-col {
+    display: flex; flex-direction: column;
+    gap: 1.2vh; flex: 1; align-items: stretch;
+  }
+  .match-item {
+    background: #fff;
+    border: 0.2vh solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.2vh 2vw;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-weight: 700; text-align: center;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s;
+    color: var(--text-dark);
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
+  .match-item.fr { font-family: 'Nunito', sans-serif; }
+  .match-item:hover:not(.matched):not(.selected) { background: var(--green-pale); border-color: var(--green-light); }
+  .match-item.selected    { background: #fff3cc; border-color: var(--accent); }
+  .match-item.matched     { background: #c8f5dc; border-color: var(--green-mid); cursor: default; color: var(--green-dark); }
+  .match-item.wrong-flash { background: #ffe0e0; border-color: #ff6b6b; }
+
+  /* FILL BLANKS */
+  .fill-sentence {
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--green-dark);
+    text-align: center; line-height: 2.4;
+    max-width: 88vw; margin-bottom: 1.5vh;
+  }
+  .blank-slot {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 1.8em; height: 2em;
+    padding: 0.1em 0.3em;
+    border-bottom: 0.22vh solid var(--green-mid);
+    border-radius: 0.3em; background: transparent;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 1em; font-weight: 700; color: var(--green-dark);
+    transition: background 0.15s;
+    vertical-align: middle; margin: 0 0.15em;
+    overflow: hidden; white-space: nowrap;
+  }
+  .blank-slot.filled        { background: #eaf8f1; border-color: var(--green-mid); border-radius: var(--radius-sm); }
+  .blank-slot.correct       { background: #c8f5dc; border-color: var(--green-mid); cursor: default; }
+  .blank-slot.wrong         { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
+  .blank-slot.selected-blank { outline: 0.2vh solid var(--accent); outline-offset: 1px; }
+
+  .word-bank {
+    display: flex; flex-wrap: wrap;
+    gap: 1vh 1.5vw; justify-content: center; max-width: 90vw;
+  }
+  .word-chip {
+    background: #fff;
+    border: 0.2vh solid var(--border);
+    border-radius: 2vw; padding: 0.7vh 2vw;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+    font-weight: 700; cursor: pointer; color: var(--text-dark);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .word-chip:hover { background: var(--green-pale); border-color: var(--green-light); }
+  .word-chip.used  { opacity: 0.3; cursor: default; pointer-events: none; }
+
+  /* OUTRO */
+  #page9 { gap: 2.5vh; text-align: center; padding: 4vh 6vw; }
+  .outro-emoji { font-size: clamp(2.5rem, 8vw, 6rem); flex-shrink: 0; }
+  .outro-title {
+    font-size: clamp(1.3rem, 3.5vw, 2.5rem);
+    font-weight: 900; color: var(--green-dark); line-height: 1.2;
+  }
+  .outro-body {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-weight: 600; color: var(--text-mid);
+    line-height: 1.8; max-width: 72vw; text-align: center;
+  }
+
+  /* FEEDBACK */
+  .feedback {
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+    font-weight: 700; color: var(--accent2);
+    text-align: center;
+    height: 2.5vh; margin-top: 0.8vh;
+    visibility: hidden; flex-shrink: 0;
+  }
+  .feedback.show { visibility: visible; }
+  .feedback.good { color: var(--green-mid); }
+
+  .divider {
+    width: 4vw; height: 0.3vh;
+    background: var(--green-light);
+    border-radius: 1vw; flex-shrink: 0;
+  }
+
+  /* HINT AREA */
+  .hint-area {
+    width: 100%; max-width: 88vw;
+    min-height: 6vh; margin-top: 1.5vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 0.6vh;
+  }
+  .hint-btn {
+    background: none;
+    border: 0.15vh solid var(--green-light);
+    border-radius: var(--radius-sm);
+    padding: 0.5vh 2vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+    font-weight: 700; color: var(--text-mid);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .hint-btn:hover { background: var(--green-pale); }
+  .hint-text-box {
+    font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+    color: var(--text-mid); font-style: italic;
+    text-align: center; line-height: 1.5;
+    visibility: hidden; min-height: 2.5vh;
+  }
+  .hint-text-box.visible { visibility: visible; }
+</style>
+</head>
+<body>
+<div id="lesson">
+
+  <!-- PAGE 1 — INTRO -->
+  <div class="page active" id="page1">
+    <div class="intro-deco">🎧</div>
+    <div class="lesson-label" style="text-align:center;">Ouvre tes oreilles : de niveau 1 à niveau 2</div>
+    <div class="lesson-title">Leçon 6<br>Mes passions</div>
+    <div class="divider"></div>
+    <button class="start-btn" onclick="startLesson()">Commencer</button>
+  </div>
+
+  <!-- PAGE 2 — MATCHING -->
+  <div class="page has-bar" id="page2">
+    <div class="page-content">
+      <div class="consigne">Associez chaque mot coréen à sa traduction française.</div>
+      <div class="match-area" id="matchArea">
+        <div class="match-col" id="krCol"></div>
+        <div class="match-col" id="frCol"></div>
+      </div>
+      <div class="feedback" id="matchFeedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" id="p2Prev" disabled>◀ Précédent</button>
+      <span class="page-indicator">2 / 9</span>
+      <button class="nav-btn" id="p2Next" onclick="goToPage(3)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3 — MCQ text hidden + audio -->
+  <div class="page has-bar" id="page3">
+    <div class="page-content">
+      <div class="consigne">Choisissez la bonne réponse.</div>
+      <div class="card" style="flex-direction:column; gap:1vh;">
+        <button class="audio-btn" onclick="playAudio('p3_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text" id="p3RevealText" style="visibility:hidden;">저는 음악을 좋아해서 가수가 되고 싶어요.<br>노래를 잘 못하지만 매일 연습해요.</div>
+      </div>
+      <div class="options-list" id="p3Options">
+        <button class="option-btn" onclick="checkMCQ(3,this,1)">1. Elle parle d'un problème personnel.</button>
+        <button class="option-btn" onclick="checkMCQ(3,this,2)">2. Elle parle d'un rêve.</button>
+        <button class="option-btn" onclick="checkMCQ(3,this,3)">3. Elle parle d'un cours à l'école.</button>
+      </div>
+      <div class="feedback" id="p3Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(2)">◀ Précédent</button>
+      <span class="page-indicator">3 / 9</span>
+      <button class="nav-btn" id="p3Next" onclick="goToPage(4)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 4 — MCQ text hidden + audio -->
+  <div class="page has-bar" id="page4">
+    <div class="page-content">
+      <div class="consigne">Choisissez la bonne réponse.</div>
+      <div class="card" style="flex-direction:column; gap:1vh;">
+        <button class="audio-btn" onclick="playAudio('p4_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text" id="p4RevealText" style="visibility:hidden;">제 친구도 음악을 좋아해요.<br>주말에는 친구와 같이 노래를 불러요.</div>
+      </div>
+      <div class="options-list" id="p4Options">
+        <button class="option-btn" onclick="checkMCQ(4,this,1)">1. Elle parle d'une activité qu'elle fait.</button>
+        <button class="option-btn" onclick="checkMCQ(4,this,2)">2. Elle parle d'une chanteuse qu'elle aime.</button>
+        <button class="option-btn" onclick="checkMCQ(4,this,3)">3. Elle parle d'un endroit.</button>
+      </div>
+      <div class="feedback" id="p4Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(3)">◀ Précédent</button>
+      <span class="page-indicator">4 / 9</span>
+      <button class="nav-btn" id="p4Next" onclick="goToPage(5)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 5 — MCQ text & audio -->
+  <div class="page has-bar" id="page5">
+    <div class="page-content">
+      <div class="consigne">Choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p5_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">저는 음악을 좋아해서 가수가 되고 싶어요.<br>노래를 잘 못하지만 매일 연습해요.</div>
+      </div>
+      <div class="options-list" id="p5Options">
+        <button class="option-btn" onclick="checkMCQ(5,this,1)">1. J'aime la musique alors je veux devenir chanteuse. Je chante bien, donc je ne m'entraîne pas souvent.</button>
+        <button class="option-btn" onclick="checkMCQ(5,this,2)">2. J'aime la musique parce que je veux devenir chanteuse. Je chante mal et je chante tous les jours.</button>
+        <button class="option-btn" onclick="checkMCQ(5,this,3)">3. J'aime la musique alors je veux devenir chanteuse. Je ne chante pas très bien mais je m'entraîne tous les jours.</button>
+      </div>
+      <div class="feedback" id="p5Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(4)">◀ Précédent</button>
+      <span class="page-indicator">5 / 9</span>
+      <button class="nav-btn" id="p5Next" onclick="goToPage(6)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 6 — MCQ text & audio -->
+  <div class="page has-bar" id="page6">
+    <div class="page-content">
+      <div class="consigne">Choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p6_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">제 친구도 음악을 좋아해요.<br>주말에는 친구와 같이 노래를 불러요.</div>
+      </div>
+      <div class="options-list" id="p6Options">
+        <button class="option-btn" onclick="checkMCQ(6,this,1)">1. Mon ami aime aussi la musique. Le week-end, je chante avec mon ami.</button>
+        <button class="option-btn" onclick="checkMCQ(6,this,2)">2. Mon ami aime aussi la musique. Le week-end, on se téléphone souvent.</button>
+        <button class="option-btn" onclick="checkMCQ(6,this,3)">3. Mon amie aime la musique mais elle chante toujours seule le week-end.</button>
+      </div>
+      <div class="feedback" id="p6Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(5)">◀ Précédent</button>
+      <span class="page-indicator">6 / 9</span>
+      <button class="nav-btn" id="p6Next" onclick="goToPage(7)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 7 — FILL IN THE BLANKS -->
+  <div class="page has-bar" id="page7">
+    <div class="page-content">
+      <div class="consigne">Écoutez l'enregistrement et complétez les blancs.</div>
+      <div class="card" style="flex-direction:column; align-items:center; gap:1.2vh;">
+        <button class="audio-btn" onclick="playAudio('p7_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="fill-sentence" id="fillSentence"></div>
+      </div>
+      <div class="word-bank" id="wordBank"></div>
+      <div class="feedback" id="p7Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(6)">◀ Précédent</button>
+      <span class="page-indicator">7 / 9</span>
+      <button class="nav-btn" id="p7Next" onclick="goToPage(8)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 8 — RE-LISTEN MCQ -->
+  <div class="page has-bar" id="page8">
+    <div class="page-content">
+      <div class="consigne">Réécoutez l'extrait et choisissez l'affirmation correcte.</div>
+      <div class="card" style="flex-direction:column; gap:1.2vh;">
+        <button class="audio-btn" onclick="playAudio('p8_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">저는 음악을 좋아해서 가수가 되고 싶어요.<br>노래를 잘 못하지만 매일 연습해요.<br>제 친구도 음악을 좋아해요.<br>주말에는 친구와 같이 노래를 불러요.</div>
+      </div>
+      <div class="options-list" id="p8Options">
+        <button class="option-btn" onclick="checkMCQ(8,this,1)">1. 이 사람은 친구를 좋아해요.</button>
+        <button class="option-btn" onclick="checkMCQ(8,this,2)">2. 이 사람과 친구는 노래를 불러요.</button>
+        <button class="option-btn" onclick="checkMCQ(8,this,3)">3. 이 사람은 배우가 되고 싶어요.</button>
+      </div>
+      <div class="hint-area">
+        <button class="hint-btn" id="p8HintBtn" onclick="showHint(8)">💡 Voir l'indice</button>
+        <div class="hint-text-box" id="p8HintText">1. Cette personne aime son ami. &nbsp;|&nbsp; 2. Cette personne et son ami chantent. &nbsp;|&nbsp; 3. Cette personne veut devenir actrice.</div>
+      </div>
+      <div class="feedback" id="p8Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(7)">◀ Précédent</button>
+      <span class="page-indicator">8 / 9</span>
+      <button class="nav-btn" id="p8Next" onclick="goToOutro()" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 9 — OUTRO -->
+  <div class="page" id="page9">
+    <div class="outro-emoji">🎉</div>
+    <div class="outro-title">Bravo, tu as terminé la leçon 6 !</div>
+    <div class="divider"></div>
+    <div class="outro-body">
+      Passions, rêves, habitudes... tu saisis maintenant des monologues du quotidien.<br>
+      Ton coréen prend vie !<br><br>
+      À demain pour la leçon 7. 화이팅 ! 💪
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ════ TONE.JS ════ */
+let correctSound = null, errorSound = null, completionSynth = null, transitionSynth = null;
+let toneReady = false, audioTimeoutId = null, currentAudio = null;
+
+async function initTone() {
+  if (toneReady) return;
+  await Tone.start();
+  correctSound    = new Tone.Synth({ oscillator: { type: 'sine'     } }).toDestination();
+  errorSound      = new Tone.Synth({ oscillator: { type: 'triangle' } }).toDestination();
+  completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+  transitionSynth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
+  }).toDestination();
+  transitionSynth.volume.value = -15;
+  toneReady = true;
+}
+
+function playSFX(type) {
+  if (!toneReady) return;
+  if (type === 'sfx_correct' && correctSound) correctSound.triggerAttackRelease('C5', '0.2s');
+  else if (type === 'sfx_wrong' && errorSound) errorSound.triggerAttackRelease('C4', '0.1s');
+}
+function playTransition() { if (toneReady && transitionSynth) transitionSynth.triggerAttackRelease('C6', '0.05s'); }
+function playLessonComplete() { if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n"); }
+
+/* ════ AUDIO ════ */
+// part 1: 저는 음악을 좋아해서 가수가 되고 싶어요. 노래를 잘 못하지만 매일 연습해요.
+const _A1  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779092076/6-1_uza0df.mp3';
+// part 2: 제 친구도 음악을 좋아해요. 주말에는 친구와 같이 노래를 불러요.
+const _A2  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779092131/6-2_zq8and.mp3';
+// 전체 본문
+const _ALL = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779092133/lec%CC%A7on_6_koqtmx.wav';
+
+const AUDIO = {
+  p3_audio: _A1,   // Page 3 (text hidden) → part 1
+  p4_audio: _A2,   // Page 4 (text hidden) → part 2
+  p5_audio: _A1,   // Page 5 (text & audio) → part 1
+  p6_audio: _A2,   // Page 6 (text & audio) → part 2
+  p7_audio: _ALL,  // Page 7 (fill blanks) → 전체
+  p8_audio: _ALL,  // Page 8 (re-listen) → 전체
+};
+
+const PAGE_AUDIO_KEY = {
+  3:'p3_audio', 4:'p4_audio', 5:'p5_audio',
+  6:'p6_audio', 7:'p7_audio', 8:'p8_audio',
+};
+
+function playAudio(key) {
+  const src = AUDIO[key]; if (!src) return;
+  stopAudio();
+  currentAudio = new Audio(src);
+  currentAudio.play().catch(e => console.warn('Audio:', e));
+}
+function stopAudio() {
+  if (audioTimeoutId) { clearTimeout(audioTimeoutId); audioTimeoutId = null; }
+  if (currentAudio)   { currentAudio.pause(); currentAudio.currentTime = 0; currentAudio = null; }
+}
+
+/* ════ NAVIGATION ════ */
+let currentPage = 1;
+
+async function startLesson() {
+  await initTone();
+  playTransition();
+  stopAudio();
+  document.getElementById('page1').classList.remove('active');
+  currentPage = 2;
+  document.getElementById('page2').classList.add('active');
+}
+
+function goToPage(n) {
+  playTransition();
+  stopAudio();
+  document.getElementById('page' + currentPage).classList.remove('active');
+  currentPage = n;
+  document.getElementById('page' + n).classList.add('active');
+  const key = PAGE_AUDIO_KEY[n];
+  if (key) audioTimeoutId = setTimeout(() => playAudio(key), 500);
+}
+
+function goToOutro() {
+  stopAudio();
+  playLessonComplete();
+  triggerLessonComplete();
+  document.getElementById('page' + currentPage).classList.remove('active');
+  currentPage = 9;
+  document.getElementById('page9').classList.add('active');
+}
+
+function showHint(page) {
+  const btn  = document.getElementById('p' + page + 'HintBtn');
+  const text = document.getElementById('p' + page + 'HintText');
+  if (btn)  btn.style.visibility = 'hidden';
+  if (text) text.classList.add('visible');
+}
+
+function triggerLessonComplete() {
+  window.parent.postMessage({ type: 'lesson_complete' }, '*');
+}
+
+/* 이탈/전원차단 시 강제 종료 */
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopAudio(); });
+window.addEventListener('pagehide',     () => stopAudio());
+window.addEventListener('beforeunload', () => stopAudio());
+
+/* ════ MCQ ════ */
+// p3=2, p4=1, p5=3, p6=1, p8=2
+const MCQ_ANSWERS = { 3:2, 4:1, 5:3, 6:1, 8:2 };
+const MCQ_SOLVED  = new Set();
+
+function checkMCQ(page, btn, chosen) {
+  if (MCQ_SOLVED.has(page)) return;
+  const correct    = MCQ_ANSWERS[page];
+  const optionsEl  = document.getElementById('p' + page + 'Options');
+  const feedbackEl = document.getElementById('p' + page + 'Feedback');
+
+  if (chosen === correct) {
+    MCQ_SOLVED.add(page);
+    btn.classList.add('correct');
+    optionsEl.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    feedbackEl.textContent = '✓ Correct !';
+    feedbackEl.className = 'feedback good show';
+    playSFX('sfx_correct');
+    const revealEl = document.getElementById('p' + page + 'RevealText');
+    if (revealEl) revealEl.style.visibility = 'visible';
+    if (page === 8) {
+      document.getElementById('p8Next').disabled = false;
+    } else {
+      document.getElementById('p' + page + 'Next').disabled = false;
+    }
+  } else {
+    btn.classList.add('wrong');
+    feedbackEl.textContent = '✗ Réessayez !';
+    feedbackEl.className = 'feedback show';
+    playSFX('sfx_wrong');
+    setTimeout(() => {
+      btn.classList.remove('wrong');
+      feedbackEl.textContent = '';
+      feedbackEl.classList.remove('show');
+    }, 700);
+  }
+}
+
+/* ════ MATCHING ════ */
+const MATCH_PAIRS = [
+  { kr: '음악',    fr: 'musique'      },
+  { kr: '가수',    fr: 'chanteuse'    },
+  { kr: '연습하다', fr: 's\'entraîner' },
+  { kr: '친구',    fr: 'ami'          },
+  { kr: '주말',    fr: 'week-end'     },
+  { kr: '같이',    fr: 'ensemble'     },
+];
+let matchState = { selectedKR: null, selectedFR: null, matchedCount: 0 };
+
+function initMatchPage() {
+  matchState = { selectedKR: null, selectedFR: null, matchedCount: 0 };
+  const krCol = document.getElementById('krCol');
+  const frCol = document.getElementById('frCol');
+  krCol.innerHTML = ''; frCol.innerHTML = '';
+  const frShuffled = [...MATCH_PAIRS].sort(() => Math.random() - 0.5);
+  MATCH_PAIRS.forEach(pair => {
+    const el = document.createElement('div');
+    el.className = 'match-item kr';
+    el.textContent = pair.kr; el.dataset.value = pair.kr;
+    el.addEventListener('click', () => selectMatchItem('kr', el));
+    krCol.appendChild(el);
+  });
+  frShuffled.forEach(pair => {
+    const el = document.createElement('div');
+    el.className = 'match-item fr';
+    el.textContent = pair.fr; el.dataset.value = pair.fr;
+    el.addEventListener('click', () => selectMatchItem('fr', el));
+    frCol.appendChild(el);
+  });
+}
+
+function selectMatchItem(side, el) {
+  if (el.classList.contains('matched')) return;
+  if (side === 'kr') {
+    if (matchState.selectedKR) matchState.selectedKR.classList.remove('selected');
+    el.classList.add('selected'); matchState.selectedKR = el;
+  } else {
+    if (matchState.selectedFR) matchState.selectedFR.classList.remove('selected');
+    el.classList.add('selected'); matchState.selectedFR = el;
+  }
+  if (matchState.selectedKR && matchState.selectedFR) {
+    const krVal = matchState.selectedKR.dataset.value;
+    const frVal = matchState.selectedFR.dataset.value;
+    const pair  = MATCH_PAIRS.find(p => p.kr === krVal);
+    if (pair && pair.fr === frVal) {
+      matchState.selectedKR.classList.remove('selected'); matchState.selectedKR.classList.add('matched');
+      matchState.selectedFR.classList.remove('selected'); matchState.selectedFR.classList.add('matched');
+      matchState.selectedKR = null; matchState.selectedFR = null;
+      playSFX('sfx_correct');
+      matchState.matchedCount++;
+      if (matchState.matchedCount === MATCH_PAIRS.length) {
+        if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");
+        document.getElementById('matchFeedback').textContent = '✓ Parfait, tout est correct !';
+        document.getElementById('matchFeedback').className = 'feedback good show';
+        document.getElementById('p2Next').disabled = false;
+      }
+    } else {
+      matchState.selectedKR.classList.add('wrong-flash');
+      matchState.selectedFR.classList.add('wrong-flash');
+      playSFX('sfx_wrong');
+      const kr = matchState.selectedKR, fr = matchState.selectedFR;
+      matchState.selectedKR = null; matchState.selectedFR = null;
+      setTimeout(() => {
+        kr.classList.remove('wrong-flash', 'selected');
+        fr.classList.remove('wrong-flash', 'selected');
+      }, 600);
+    }
+  }
+}
+
+/* ════ FILL IN THE BLANKS (PAGE 7) ════
+   저는 [0] 좋아[1] 가수가 되고 싶어요. 노래를 잘 [2] 매일 연습해요.
+   제 친구도 음악을 [3]. 주말에는 친구[4] 같이 노래를 [5].
+   Answers: 음악을 / 해서 / 못하지만 / 좋아해요 / 와 / 불러요
+*/
+const FILL_BLANKS    = ['음악을','해서','못하지만','좋아해요','와','불러요'];
+const WORD_BANK_WORDS = ['모타지만','부러요','해서','여서','와','좋아요','으마글','과','못하지만','불러요','하서','음악을','애서','좋아해요','매일'];
+const FILL_SEGMENTS  = [
+  { text: '저는 ' }, { blank: 0 }, { text: ' 좋아' }, { blank: 1 },
+  { text: ' 가수가 되고 싶어요. 노래를 잘 ' }, { blank: 2 },
+  { text: ' 매일 연습해요.' },
+  { text: ' 제 친구도 음악을 ' }, { blank: 3 },
+  { text: '. 주말에는 친구' }, { blank: 4 },
+  { text: ' 같이 노래를 ' }, { blank: 5 }, { text: '.' },
+];
+
+let fillAnswers   = new Array(6).fill(null);
+let fillValidated = new Array(6).fill(false);
+let selectedBlank = null;
+
+function initFillPage() {
+  fillAnswers   = new Array(6).fill(null);
+  fillValidated = new Array(6).fill(false);
+  selectedBlank = null;
+  renderFillSentence();
+  renderWordBank();
+  document.getElementById('p7Feedback').textContent = '';
+}
+
+function renderFillSentence() {
+  const container = document.getElementById('fillSentence');
+  container.innerHTML = '';
+  FILL_SEGMENTS.forEach(seg => {
+    if (seg.text !== undefined) {
+      container.appendChild(document.createTextNode(seg.text));
+    } else {
+      const idx  = seg.blank;
+      const slot = document.createElement('span');
+      slot.dataset.idx = idx;
+      slot.style.width = Math.max(1.8, FILL_BLANKS[idx].length * 1.6) + 'em';
+      if (fillValidated[idx]) {
+        slot.className   = 'blank-slot correct';
+        slot.textContent = fillAnswers[idx];
+      } else if (fillAnswers[idx]) {
+        slot.className   = 'blank-slot filled' + (idx === selectedBlank ? ' selected-blank' : '');
+        slot.textContent = fillAnswers[idx];
+        slot.addEventListener('click', () => {
+          fillAnswers[idx] = null; selectedBlank = idx;
+          renderFillSentence(); renderWordBank();
+        });
+      } else {
+        slot.className   = 'blank-slot' + (idx === selectedBlank ? ' selected-blank' : '');
+        slot.textContent = '';
+        slot.addEventListener('click', () => {
+          selectedBlank = idx; renderFillSentence(); renderWordBank();
+        });
+      }
+      container.appendChild(slot);
+    }
+  });
+}
+
+function renderWordBank() {
+  const bank = document.getElementById('wordBank');
+  bank.innerHTML = '';
+  WORD_BANK_WORDS.forEach(word => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip';
+    chip.textContent = word;
+    if (fillAnswers.includes(word)) { chip.classList.add('used'); }
+    else { chip.addEventListener('click', () => placeWord(word)); }
+    bank.appendChild(chip);
+  });
+}
+
+function placeWord(word) {
+  if (selectedBlank === null) {
+    const first = fillAnswers.findIndex((a, i) => a === null && !fillValidated[i]);
+    if (first === -1) return;
+    selectedBlank = first;
+  }
+  if (fillValidated[selectedBlank]) return;
+  fillAnswers[selectedBlank] = word;
+
+  if (word === FILL_BLANKS[selectedBlank]) {
+    fillValidated[selectedBlank] = true;
+    playSFX('sfx_correct');
+    let next = fillAnswers.findIndex((a, i) => i > selectedBlank && !fillValidated[i] && a === null);
+    if (next === -1) next = fillAnswers.findIndex((a, i) => !fillValidated[i] && a === null);
+    selectedBlank = next === -1 ? null : next;
+    if (fillValidated.every(v => v)) {
+      if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");
+      document.getElementById('p7Feedback').textContent = '✓ Excellent, tout est correct !';
+      document.getElementById('p7Feedback').className = 'feedback good show';
+      document.getElementById('p7Next').disabled = false;
+      selectedBlank = null;
+    }
+    renderFillSentence(); renderWordBank();
+  } else {
+    renderFillSentence(); renderWordBank();
+    playSFX('sfx_wrong');
+    setTimeout(() => {
+      for (let i = 0; i < fillAnswers.length; i++) {
+        if (fillAnswers[i] === word && !fillValidated[i]) { fillAnswers[i] = null; break; }
+      }
+      renderFillSentence(); renderWordBank();
+    }, 700);
+  }
+}
+
+/* ════ INIT ════ */
+initMatchPage();
+initFillPage();
+</script>
+</body>
+</html>
