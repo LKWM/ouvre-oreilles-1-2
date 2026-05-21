@@ -4,14 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leçon 2 - Se présenter</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js">
-// 페이지 이탈/탭 전환/전원차단 시 오디오 강제 종료
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) stopAudio();
-});
-window.addEventListener('pagehide', () => stopAudio());
-window.addEventListener('beforeunload', () => stopAudio());
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
@@ -44,14 +37,12 @@ window.addEventListener('beforeunload', () => stopAudio());
     user-select: none;
   }
 
-  /* ── LESSON CONTAINER ── */
   #lesson {
     width: 100%; height: 100%;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
   }
 
-  /* ── PAGE ── */
   .page {
     display: none;
     width: 100%; height: 100%;
@@ -60,13 +51,8 @@ window.addEventListener('beforeunload', () => stopAudio());
     padding: 3vh 4vw;
   }
   .page.active { display: flex; }
+  .page.has-bar { padding-bottom: 0; }
 
-  /* Pages with bottom bar use this */
-  .page.has-bar {
-    padding-bottom: 0;
-  }
-
-  /* ── BOTTOM BAR ── */
   .bottom-bar {
     width: 100%;
     display: flex;
@@ -77,316 +63,6 @@ window.addEventListener('beforeunload', () => stopAudio());
     border-top: 0.15vh solid var(--border);
     flex-shrink: 0;
   }
-  .bottom-bar .nav-btn {
-    background: var(--green-mid);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 0.8vh 2.5vw;
-    font-family: 'Nunito', sans-serif;
-    font-size: clamp(0.7rem, 1.5vw, 1rem);
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    letter-spacing: 0.03em;
-  }
-  .bottom-bar .nav-btn:hover { background: var(--green-dark); transform: scale(1.04); }
-  .bottom-bar .nav-btn:disabled { background: #b8dfc9; cursor: not-allowed; transform: none; }
-  .bottom-bar .page-indicator {
-    font-size: clamp(0.7rem, 1.4vw, 0.95rem);
-    color: var(--text-mid);
-    font-weight: 700;
-  }
-
-  /* Page content area (above bar) */
-  .page-content {
-    flex: 1;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  /* ── TYPOGRAPHY ── */
-  .lesson-label {
-    font-size: clamp(0.8rem, 1.8vw, 1.1rem);
-    font-weight: 800;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--green-light);
-    margin-bottom: 0.8vh;
-  }
-  .lesson-title {
-    font-size: clamp(1.8rem, 5vw, 3.5rem);
-    font-weight: 900;
-    color: var(--green-dark);
-    text-align: center;
-    line-height: 1.15;
-  }
-  .consigne {
-    font-size: clamp(1rem, 2.2vw, 1.4rem);
-    font-weight: 700;
-    color: var(--text-mid);
-    text-align: center;
-    margin-bottom: 1.5vh;
-    letter-spacing: 0.01em;
-  }
-
-  /* ── CARDS ── */
-  .card {
-    background: var(--green-card);
-    border: 0.15vh solid var(--border);
-    border-radius: var(--radius);
-    padding: 2.5vh 5vw;
-    width: 100%;
-    max-width: 88vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3vw;
-    box-shadow: 0 0.4vh 1.5vh var(--shadow);
-    margin-bottom: 2vh;
-    flex-shrink: 0;
-  }
-  .card-text {
-    font-size: clamp(1.1rem, 2.8vw, 1.7rem);
-    font-weight: 700;
-    color: var(--green-dark);
-    text-align: center;
-    font-family: 'Noto Sans KR', sans-serif;
-    line-height: 1.6;
-  }
-
-  /* ── AUDIO BUTTON ── */
-  .audio-btn {
-    background: var(--green-mid);
-    border: none;
-    border-radius: 50%;
-    width: clamp(3rem, 7vw, 4.5rem);
-    height: clamp(3rem, 7vw, 4.5rem);
-    display: flex; align-items: center; justify-content: center;
-    padding: 0;              /* 아이콘 완전 중앙 */
-    line-height: 1;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background 0.2s, transform 0.15s;
-    box-shadow: 0 0.3vh 0.8vh var(--shadow);
-  }
-  .audio-btn:hover { background: var(--green-dark); transform: scale(1.08); }
-  .audio-btn svg { width: 45%; height: 45%; fill: #fff; display: block; }
-
-  /* ── MCQ OPTIONS ── */
-  .options-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2vh;
-    width: 100%;
-    max-width: 88vw;
-  }
-  .option-btn {
-    background: #fff;
-    border: 0.2vh solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 1.4vh 3vw;
-    font-family: 'Nunito', sans-serif;
-    font-size: clamp(0.9rem, 2vw, 1.15rem);
-    font-weight: 600;
-    color: var(--text-dark);
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.18s, border-color 0.18s, transform 0.1s;
-    line-height: 1.4;
-  }
-  .option-btn:hover { background: var(--green-pale); border-color: var(--green-light); }
-  .option-btn.correct { background: #c8f5dc; border-color: var(--green-mid); color: var(--green-dark); }
-  .option-btn.wrong   { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
-  .option-btn:disabled { cursor: not-allowed; }
-
-  /* hint */
-  .hint-row {
-    display: flex;
-    gap: 0.7vw;
-    width: 100%;
-    max-width: 88vw;
-    margin-top: 0.8vh;
-    flex-wrap: wrap;
-  }
-  .hint-text {
-    font-size: clamp(0.75rem, 1.6vw, 1rem);
-    color: var(--text-light);
-    font-style: italic;
-    line-height: 1.4;
-  }
-  .hint-text.revealed { color: var(--text-mid); }
-
-  /* ── PAGE 1 INTRO ── */
-  #page1 { gap: 2.5vh; }
-  .intro-deco {
-    width: clamp(4rem, 12vw, 8rem);
-    height: clamp(4rem, 12vw, 8rem);
-    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: clamp(2rem, 6vw, 4rem);
-    box-shadow: 0 0.5vh 2vh var(--shadow);
-    flex-shrink: 0;
-  }
-  .start-btn {
-    margin-top: 1vh;
-    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    padding: 1.8vh 8vw;
-    font-family: 'Nunito', sans-serif;
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    cursor: pointer;
-    box-shadow: 0 0.5vh 1.8vh var(--shadow);
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0.8vh 2.5vh rgba(45,134,83,0.3); }
-
-  /* ── PAGE 2 MATCHING ── */
-  .match-area {
-    display: flex;
-    gap: 3vw;
-    width: 100%;
-    max-width: 92vw;
-    align-items: stretch;   /* 양 컬럼 높이 동일 */
-    justify-content: center;
-  }
-  .match-col {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2vh;
-    flex: 1;
-    align-items: stretch;  /* 카드가 컬럼 너비 전체 차지 */
-  }
-  .match-item {
-    background: #fff;
-    border: 0.2vh solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 1.2vh 2vw;
-    font-size: clamp(0.9rem, 2vw, 1.2rem);
-    font-weight: 700;
-    text-align: center;
-    cursor: pointer;
-    transition: background 0.18s, border-color 0.18s;
-    color: var(--text-dark);
-    flex: 1;              /* 컬럼 내 모든 카드 동일 높이 */
-    display: flex; align-items: center; justify-content: center;
-  }
-  .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
-  .match-item.fr { font-family: 'Nunito', sans-serif; }
-  .match-item:hover:not(.matched):not(.selected) { background: var(--green-pale); border-color: var(--green-light); }
-  .match-item.selected { background: #fff3cc; border-color: var(--accent); }
-  .match-item.matched { background: #c8f5dc; border-color: var(--green-mid); cursor: default; color: var(--green-dark); }
-  .match-item.wrong-flash { background: #ffe0e0; border-color: #ff6b6b; }
-
-  /* ── PAGE 9 FILL BLANKS ── */
-  .fill-sentence {
-    font-size: clamp(1rem, 2.2vw, 1.4rem);
-    font-weight: 700;
-    font-family: 'Noto Sans KR', sans-serif;
-    color: var(--green-dark);
-    text-align: center;
-    line-height: 2.4;
-    max-width: 88vw;
-    margin-bottom: 1.5vh;
-  }
-  .blank-slot {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.8em;                  /* 글자 수에 따라 JS에서 width 동적 설정 */
-    height: 2em;
-    padding: 0.1em 0.3em;
-    border-bottom: 0.22vh solid var(--green-mid);
-    border-radius: 0.3em;
-    background: transparent;
-    cursor: pointer;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 1em;
-    font-weight: 700;
-    color: var(--green-dark);
-    transition: background 0.15s;
-    vertical-align: middle;
-    margin: 0 0.15em;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .blank-slot.filled  { background: #eaf8f1; border-color: var(--green-mid); border-radius: var(--radius-sm); }
-  .blank-slot.correct { background: #c8f5dc; border-color: var(--green-mid); cursor: default; }
-  .blank-slot.wrong   { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
-  .blank-slot.selected-blank { outline: 0.2vh solid var(--accent); outline-offset: 1px; }
-
-  .word-bank {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1vh 1.5vw;
-    justify-content: center;
-    max-width: 90vw;
-  }
-  .word-chip {
-    background: #fff;
-    border: 0.2vh solid var(--border);
-    border-radius: 2vw;
-    padding: 0.7vh 2vw;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
-    font-weight: 700;
-    cursor: pointer;
-    color: var(--text-dark);
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .word-chip:hover { background: var(--green-pale); border-color: var(--green-light); }
-  .word-chip.used { opacity: 0.3; cursor: default; pointer-events: none; }
-
-  /* ── OUTRO ── */
-  #page11 { gap: 2.5vh; text-align: center; padding: 4vh 6vw; }
-  .outro-emoji { font-size: clamp(2.5rem, 8vw, 6rem); flex-shrink: 0; }
-  .outro-title {
-    font-size: clamp(1.3rem, 3.5vw, 2.5rem);
-    font-weight: 900;
-    color: var(--green-dark);
-    line-height: 1.2;
-  }
-  .outro-body {
-    font-size: clamp(0.9rem, 2vw, 1.2rem);
-    font-weight: 600;
-    color: var(--text-mid);
-    line-height: 1.8;
-    max-width: 72vw;
-  }
-
-  /* feedback strip — 공간 항상 확보, 흔들림 없음 */
-  .feedback {
-    font-size: clamp(0.8rem, 1.6vw, 1rem);
-    font-weight: 700;
-    color: var(--accent2);
-    text-align: center;
-    height: 2.5vh;           /* 고정 높이로 공간 확보 */
-    margin-top: 0.8vh;
-    visibility: hidden;      /* 기본: 공간 점유하되 안 보임 */
-    flex-shrink: 0;
-  }
-  .feedback.show { visibility: visible; }
-  .feedback.good { color: var(--green-mid); }
-
-  /* divider */
-  .divider {
-    width: 4vw;
-    height: 0.3vh;
-    background: var(--green-light);
-    border-radius: 1vw;
-    flex-shrink: 0;
-  }
-
-  /* bottom-bar nav */
   .bottom-bar .nav-btn {
     background: var(--green-mid);
     color: #fff;
@@ -408,17 +84,217 @@ window.addEventListener('beforeunload', () => stopAudio());
     font-weight: 700;
   }
 
-  /* ── HINT AREA (항상 공간 확보, 흔들림 없음) ── */
+  .page-content {
+    flex: 1; width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+
+  .lesson-label {
+    font-size: clamp(0.8rem, 1.8vw, 1.1rem);
+    font-weight: 800; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--green-light);
+    margin-bottom: 0.8vh;
+  }
+  .lesson-title {
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: 900; color: var(--green-dark);
+    text-align: center; line-height: 1.15;
+  }
+  .consigne {
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    font-weight: 700; color: var(--text-mid);
+    text-align: center; margin-bottom: 1.5vh; letter-spacing: 0.01em;
+  }
+
+  .card {
+    background: var(--green-card);
+    border: 0.15vh solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5vh 5vw;
+    width: 100%; max-width: 88vw;
+    display: flex; align-items: center; justify-content: center;
+    gap: 3vw;
+    box-shadow: 0 0.4vh 1.5vh var(--shadow);
+    margin-bottom: 2vh; flex-shrink: 0;
+  }
+  .card-text {
+    font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+    font-weight: 700; color: var(--green-dark);
+    text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+  }
+
+  .audio-btn {
+    background: var(--green-mid);
+    border: none; border-radius: 50%;
+    width: clamp(3rem, 7vw, 4.5rem);
+    height: clamp(3rem, 7vw, 4.5rem);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; line-height: 1;
+    cursor: pointer; flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 0.3vh 0.8vh var(--shadow);
+  }
+  .audio-btn:hover { background: var(--green-dark); transform: scale(1.08); }
+  .audio-btn svg { width: 45%; height: 45%; fill: #fff; display: block; }
+
+  .options-list {
+    display: flex; flex-direction: column;
+    gap: 1.2vh; width: 100%; max-width: 88vw;
+  }
+  .option-btn {
+    background: #fff;
+    border: 0.2vh solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.4vh 3vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
+    font-weight: 600; color: var(--text-dark);
+    cursor: pointer; text-align: left;
+    transition: background 0.18s, border-color 0.18s;
+    line-height: 1.4;
+  }
+  .option-btn:hover { background: var(--green-pale); border-color: var(--green-light); }
+  .option-btn.correct { background: #c8f5dc; border-color: var(--green-mid); color: var(--green-dark); }
+  .option-btn.wrong   { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
+  .option-btn:disabled { cursor: not-allowed; }
+
+  /* INTRO */
+  #page1 { gap: 2.5vh; }
+  .intro-deco {
+    width: clamp(4rem, 12vw, 8rem); height: clamp(4rem, 12vw, 8rem);
+    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(2rem, 6vw, 4rem);
+    box-shadow: 0 0.5vh 2vh var(--shadow); flex-shrink: 0;
+  }
+  .start-btn {
+    margin-top: 1vh;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: #fff; border: none; border-radius: var(--radius);
+    padding: 1.8vh 8vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: 800; letter-spacing: 0.06em;
+    cursor: pointer;
+    box-shadow: 0 0.5vh 1.8vh var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0.8vh 2.5vh rgba(45,134,83,0.3); }
+
+  /* MATCHING */
+  .match-area {
+    display: flex; gap: 3vw;
+    width: 100%; max-width: 92vw;
+    align-items: stretch; justify-content: center;
+  }
+  .match-col {
+    display: flex; flex-direction: column;
+    gap: 1.2vh; flex: 1; align-items: stretch;
+  }
+  .match-item {
+    background: #fff;
+    border: 0.2vh solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.2vh 2vw;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-weight: 700; text-align: center;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s;
+    color: var(--text-dark);
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
+  .match-item.fr { font-family: 'Nunito', sans-serif; }
+  .match-item:hover:not(.matched):not(.selected) { background: var(--green-pale); border-color: var(--green-light); }
+  .match-item.selected { background: #fff3cc; border-color: var(--accent); }
+  .match-item.matched  { background: #c8f5dc; border-color: var(--green-mid); cursor: default; color: var(--green-dark); }
+  .match-item.wrong-flash { background: #ffe0e0; border-color: #ff6b6b; }
+
+  /* FILL BLANKS */
+  .fill-sentence {
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--green-dark);
+    text-align: center; line-height: 2.4;
+    max-width: 88vw; margin-bottom: 1.5vh;
+  }
+  .blank-slot {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 1.8em; height: 2em;
+    padding: 0.1em 0.3em;
+    border-bottom: 0.22vh solid var(--green-mid);
+    border-radius: 0.3em; background: transparent;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 1em; font-weight: 700; color: var(--green-dark);
+    transition: background 0.15s;
+    vertical-align: middle; margin: 0 0.15em;
+    overflow: hidden; white-space: nowrap;
+  }
+  .blank-slot.filled  { background: #eaf8f1; border-color: var(--green-mid); border-radius: var(--radius-sm); }
+  .blank-slot.correct { background: #c8f5dc; border-color: var(--green-mid); cursor: default; }
+  .blank-slot.wrong   { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
+  .blank-slot.selected-blank { outline: 0.2vh solid var(--accent); outline-offset: 1px; }
+
+  .word-bank {
+    display: flex; flex-wrap: wrap;
+    gap: 1vh 1.5vw; justify-content: center; max-width: 90vw;
+  }
+  .word-chip {
+    background: #fff;
+    border: 0.2vh solid var(--border);
+    border-radius: 2vw; padding: 0.7vh 2vw;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+    font-weight: 700; cursor: pointer; color: var(--text-dark);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .word-chip:hover { background: var(--green-pale); border-color: var(--green-light); }
+  .word-chip.used  { opacity: 0.3; cursor: default; pointer-events: none; }
+
+  /* OUTRO */
+  #page11 { gap: 2.5vh; text-align: center; padding: 4vh 6vw; }
+  .outro-emoji { font-size: clamp(2.5rem, 8vw, 6rem); flex-shrink: 0; }
+  .outro-title {
+    font-size: clamp(1.3rem, 3.5vw, 2.5rem);
+    font-weight: 900; color: var(--green-dark); line-height: 1.2;
+  }
+  .outro-body {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-weight: 600; color: var(--text-mid);
+    line-height: 1.8; max-width: 72vw; text-align: center;
+  }
+
+  /* FEEDBACK — visibility 방식, 항상 공간 확보 */
+  .feedback {
+    font-size: clamp(0.8rem, 1.6vw, 1rem);
+    font-weight: 700; color: var(--accent2);
+    text-align: center;
+    height: 2.5vh; margin-top: 0.8vh;
+    visibility: hidden; flex-shrink: 0;
+  }
+  .feedback.show { visibility: visible; }
+  .feedback.good { color: var(--green-mid); }
+
+  .divider {
+    width: 4vw; height: 0.3vh;
+    background: var(--green-light);
+    border-radius: 1vw; flex-shrink: 0;
+  }
+
+  /* HINT AREA */
   .hint-area {
-    width: 100%;
-    max-width: 88vw;
-    min-height: 6vh;          /* 버튼+텍스트 최대 높이 미리 확보 */
-    margin-top: 1.5vh;        /* 선택지와 간격 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6vh;
+    width: 100%; max-width: 88vw;
+    min-height: 6vh; margin-top: 1.5vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 0.6vh;
   }
   .hint-btn {
     background: none;
@@ -427,20 +303,15 @@ window.addEventListener('beforeunload', () => stopAudio());
     padding: 0.5vh 2vw;
     font-family: 'Nunito', sans-serif;
     font-size: clamp(0.8rem, 1.6vw, 1rem);
-    font-weight: 700;
-    color: var(--text-mid);
-    cursor: pointer;
-    transition: background 0.15s;
+    font-weight: 700; color: var(--text-mid);
+    cursor: pointer; transition: background 0.15s;
   }
   .hint-btn:hover { background: var(--green-pale); }
   .hint-text-box {
     font-size: clamp(0.75rem, 1.5vw, 0.95rem);
-    color: var(--text-mid);
-    font-style: italic;
-    text-align: center;
-    line-height: 1.5;
-    visibility: hidden;       /* 공간 확보된 채로 숨김 */
-    min-height: 2.5vh;
+    color: var(--text-mid); font-style: italic;
+    text-align: center; line-height: 1.5;
+    visibility: hidden; min-height: 2.5vh;
   }
   .hint-text-box.visible { visibility: visible; }
 </style>
@@ -448,9 +319,7 @@ window.addEventListener('beforeunload', () => stopAudio());
 <body>
 <div id="lesson">
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 1 — INTRO
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 1 — INTRO -->
   <div class="page active" id="page1">
     <div class="intro-deco">🎧</div>
     <div class="lesson-label" style="text-align:center;">Ouvre tes oreilles : de niveau 1 à niveau 2</div>
@@ -459,9 +328,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     <button class="start-btn" onclick="startLesson()">Commencer</button>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 2 — MATCHING KR↔FR
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 2 — MATCHING -->
   <div class="page has-bar" id="page2">
     <div class="page-content">
       <div class="consigne">Associez chaque mot coréen à sa traduction française.</div>
@@ -478,9 +345,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 3 — MCQ CARD TEXT & AUDIO (text hidden → revealed on correct)
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 3 — MCQ text hidden -->
   <div class="page has-bar" id="page3">
     <div class="page-content">
       <div class="consigne">Choisissez la bonne réponse.</div>
@@ -504,9 +369,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 4 — MCQ CARD TEXT & AUDIO (text hidden → revealed on correct)
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 4 — MCQ text hidden -->
   <div class="page has-bar" id="page4">
     <div class="page-content">
       <div class="consigne">Choisissez la bonne réponse.</div>
@@ -530,9 +393,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 5 — MCQ CARD TEXT & AUDIO (text hidden → revealed on correct)
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 5 — MCQ text hidden -->
   <div class="page has-bar" id="page5">
     <div class="page-content">
       <div class="consigne">Choisissez la bonne réponse.</div>
@@ -556,9 +417,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 6 — MCQ TEXT & AUDIO
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 6 — MCQ text & audio -->
   <div class="page has-bar" id="page6">
     <div class="page-content">
       <div class="consigne">Choisissez la traduction qui correspond.</div>
@@ -582,9 +441,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 7 — MCQ TEXT & AUDIO
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 7 — MCQ text & audio -->
   <div class="page has-bar" id="page7">
     <div class="page-content">
       <div class="consigne">Choisissez la traduction qui correspond.</div>
@@ -608,9 +465,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 8 — MCQ TEXT & AUDIO
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 8 — MCQ text & audio -->
   <div class="page has-bar" id="page8">
     <div class="page-content">
       <div class="consigne">Choisissez la traduction qui correspond.</div>
@@ -634,9 +489,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 9 — FILL IN THE BLANKS
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 9 — FILL IN THE BLANKS -->
   <div class="page has-bar" id="page9">
     <div class="page-content">
       <div class="consigne">Écoutez l'enregistrement et complétez les blancs.</div>
@@ -656,24 +509,20 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 10 — RE-LISTEN MCQ
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 10 — RE-LISTEN MCQ (Exercice 5-1 / Card with audio only) -->
   <div class="page has-bar" id="page10">
     <div class="page-content">
       <div class="consigne">Réécoutez l'extrait et choisissez l'affirmation correcte.</div>
-      <div class="card" style="flex-direction:column; gap:1.2vh;">
+      <div class="card" style="justify-content:center;">
         <button class="audio-btn" onclick="playAudio('p10_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <div class="card-text">저는 김민수예요. 한국 사람이에요. 지금 서울에 있어요. 서울은행에서 일해요. 회사는 집에서 가까워요.</div>
       </div>
       <div class="options-list" id="p10Options">
         <button class="option-btn" onclick="checkMCQ(10,this,1)">1. 이 사람은 학생이에요.</button>
         <button class="option-btn" onclick="checkMCQ(10,this,2)">2. 이 사람은 서울에 살아요.</button>
         <button class="option-btn" onclick="checkMCQ(10,this,3)">3. 이 사람은 한국에 안 살아요.</button>
       </div>
-      <!-- 힌트: 공간 항상 확보, 버튼 클릭 시만 텍스트 공개 -->
       <div class="hint-area">
         <button class="hint-btn" id="p10HintBtn" onclick="showHint(10)">💡 Voir l'indice</button>
         <div class="hint-text-box" id="p10HintText">1. Cette personne est un étudiant. &nbsp;|&nbsp; 2. Cette personne vit à Séoul. &nbsp;|&nbsp; 3. Cette personne n'habite pas en Corée.</div>
@@ -687,9 +536,7 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PAGE 11 — OUTRO
-  ═══════════════════════════════════════════ -->
+  <!-- PAGE 11 — OUTRO -->
   <div class="page" id="page11">
     <div class="outro-emoji">🎉</div>
     <div class="outro-title">Bravo, tu as terminé la leçon 2 !</div>
@@ -703,21 +550,13 @@ window.addEventListener('beforeunload', () => stopAudio());
     </div>
   </div>
 
-</div><!-- #lesson -->
+</div>
 
 <script>
-/* ════════════════════════════════════════════════
-   TONE.JS — SOUND ENGINE  (레슨 8 완전 동일 패턴)
-════════════════════════════════════════════════ */
-let correctSound    = null;
-let errorSound      = null;
-let completionSynth = null;
-let transitionSynth = null;
-let toneReady       = false;
-let audioTimeoutId  = null;  // 자동재생 타이머 ID (레슨 8: audioTimeoutId)
-let currentAudio    = null;  // 현재 재생 중인 Audio 객체
+/* ════ TONE.JS ════ */
+let correctSound = null, errorSound = null, completionSynth = null, transitionSynth = null;
+let toneReady = false, audioTimeoutId = null, currentAudio = null;
 
-// ── Tone 초기화 (레슨 8: startLesson → initAudioContext)
 async function initTone() {
   if (toneReady) return;
   await Tone.start();
@@ -726,7 +565,7 @@ async function initTone() {
   completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
   transitionSynth = new Tone.Synth({
     oscillator: { type: 'sine' },
-    envelope:   { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
+    envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
   }).toDestination();
   transitionSynth.volume.value = -15;
   toneReady = true;
@@ -737,84 +576,57 @@ function playSFX(type) {
   if (type === 'sfx_correct' && correctSound) correctSound.triggerAttackRelease('C5', '0.2s');
   else if (type === 'sfx_wrong' && errorSound) errorSound.triggerAttackRelease('C4', '0.1s');
 }
-function playTransition() {
-  if (toneReady && transitionSynth) transitionSynth.triggerAttackRelease('C6', '0.05s');
-}
-function playLessonComplete() {
-  if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n");
-}
+function playTransition() { if (toneReady && transitionSynth) transitionSynth.triggerAttackRelease('C6', '0.05s'); }
+function playLessonComplete() { if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n"); }
 
-/* ════════════════════════════════════════════════
-   오디오 URL  (동일 파일은 변수 공유)
-════════════════════════════════════════════════ */
+/* ════ AUDIO ════ */
 const _A1  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547072/2-1_uluowx.mp3';
 const _A2  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547075/2-2_wjbgtw.mp3';
 const _A3  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547079/2-3_cvsdqq.mp3';
 const _ALL = 'https://res.cloudinary.com/de76i94ia/video/upload/v1777547083/lec%CC%A7on_2_cjmusp.wav';
 
 const AUDIO = {
-  p3_audio:  _A1,   // Page 3  (audio only)   → 저는 김민수예요. 한국 사람이에요.
-  p4_audio:  _A2,   // Page 4  (audio only)   → 지금 서울에 있어요.
-  p5_audio:  _A3,   // Page 5  (audio only)   → 서울은행에서 일해요. 회사는 집에서 가까워요.
-  p6_audio:  _A1,   // Page 6  (text & audio) → 저는 김민수예요. 한국 사람이에요.
-  p7_audio:  _A2,   // Page 7  (text & audio) → 지금 서울에 있어요.
-  p8_audio:  _A3,   // Page 8  (text & audio) → 서울은행에서 일해요. 회사는 집에서 가까워요.
-  p9_audio:  _ALL,  // Page 9  (fill blanks)  → 전체 passage
-  p10_audio: _ALL,  // Page 10 (re-listen)    → 전체 passage
+  p3_audio: _A1, p4_audio: _A2, p5_audio: _A3,
+  p6_audio: _A1, p7_audio: _A2, p8_audio: _A3,
+  p9_audio: _ALL, p10_audio: _ALL,
+};
+const PAGE_AUDIO_KEY = {
+  3:'p3_audio', 4:'p4_audio', 5:'p5_audio',
+  6:'p6_audio', 7:'p7_audio', 8:'p8_audio',
+  9:'p9_audio', 10:'p10_audio'
 };
 
-// 페이지 번호 → 자동재생 키 매핑
-const PAGE_AUDIO_KEY = { 3:'p3_audio', 4:'p4_audio', 5:'p5_audio',
-                         6:'p6_audio', 7:'p7_audio', 8:'p8_audio',
-                         9:'p9_audio', 10:'p10_audio' };
-
-// 레슨 8의 playCardAudio()와 동일 구조
 function playAudio(key) {
-  const src = AUDIO[key];
-  if (!src) return;
+  const src = AUDIO[key]; if (!src) return;
   stopAudio();
   currentAudio = new Audio(src);
-  const p = currentAudio.play();
-  if (p !== undefined) p.catch(e => console.warn('Audio:', e));
+  currentAudio.play().catch(e => console.warn('Audio:', e));
 }
-
-// 레슨 8의 changePage() 내 강제종료 처리와 동일
 function stopAudio() {
   if (audioTimeoutId) { clearTimeout(audioTimeoutId); audioTimeoutId = null; }
   if (currentAudio)   { currentAudio.pause(); currentAudio.currentTime = 0; currentAudio = null; }
 }
 
-/* ════════════════════════════════════════════════
-   PAGE NAVIGATION
-   레슨 8 changePage() 패턴:
-   ① transitionSynth 틱  ② currentAudio 강제종료
-   ③ audioTimeoutId 클리어  ④ 페이지 전환
-   ⑤ 300ms 후 오디오 자동재생
-════════════════════════════════════════════════ */
+/* ════ NAVIGATION ════ */
 let currentPage = 1;
 
-// Commencer 버튼 — Tone 초기화를 await 한 뒤 전환 (타이밍 문제 해결)
 async function startLesson() {
-  await initTone();          // AudioContext 완전 준비
-  playTransition();          // 이제 Tone이 준비됐으므로 효과음 정상 재생
+  await initTone();
+  playTransition();
   stopAudio();
   document.getElementById('page1').classList.remove('active');
   currentPage = 2;
   document.getElementById('page2').classList.add('active');
-  // page2는 오디오 없으므로 자동재생 없음
 }
 
 function goToPage(n) {
-  playTransition();   // ① 효과음
-  stopAudio();        // ② + ③ 오디오 강제종료 & 타이머 클리어
-  document.getElementById('page' + currentPage).classList.remove('active');  // ④
+  playTransition();
+  stopAudio();
+  document.getElementById('page' + currentPage).classList.remove('active');
   currentPage = n;
   document.getElementById('page' + n).classList.add('active');
-  // ⑤ 오디오 있는 페이지면 500ms 후 자동재생 1회
   const key = PAGE_AUDIO_KEY[n];
-  if (key) {
-    audioTimeoutId = setTimeout(() => playAudio(key), 500);
-  }
+  if (key) audioTimeoutId = setTimeout(() => playAudio(key), 500);
 }
 
 function goToOutro() {
@@ -826,11 +638,10 @@ function goToOutro() {
   document.getElementById('page11').classList.add('active');
 }
 
-
 function showHint(page) {
   const btn  = document.getElementById('p' + page + 'HintBtn');
   const text = document.getElementById('p' + page + 'HintText');
-  if (btn)  btn.style.visibility  = 'hidden';
+  if (btn)  btn.style.visibility = 'hidden';
   if (text) text.classList.add('visible');
 }
 
@@ -838,19 +649,19 @@ function triggerLessonComplete() {
   window.parent.postMessage({ type: 'lesson_complete' }, '*');
 }
 
-/* ════════════════════════════════════════════════
-   MCQ — PAGES 3-8, 10
-   Correct answers:
-   p3=3, p4=2, p5=3, p6=1, p7=2, p8=3, p10=2
-════════════════════════════════════════════════ */
-const MCQ_ANSWERS = { 3:3, 4:2, 5:3, 6:1, 7:2, 8:3, 10:2 };
+/* 이탈/전원차단 시 강제 종료 */
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopAudio(); });
+window.addEventListener('pagehide',     () => stopAudio());
+window.addEventListener('beforeunload', () => stopAudio());
 
-const MCQ_SOLVED = new Set();
+/* ════ MCQ ════ */
+const MCQ_ANSWERS = { 3:3, 4:2, 5:3, 6:1, 7:2, 8:3, 10:2 };
+const MCQ_SOLVED  = new Set();
 
 function checkMCQ(page, btn, chosen) {
   if (MCQ_SOLVED.has(page)) return;
-  const correct = MCQ_ANSWERS[page];
-  const optionsEl = document.getElementById('p' + page + 'Options');
+  const correct    = MCQ_ANSWERS[page];
+  const optionsEl  = document.getElementById('p' + page + 'Options');
   const feedbackEl = document.getElementById('p' + page + 'Feedback');
 
   if (chosen === correct) {
@@ -860,7 +671,6 @@ function checkMCQ(page, btn, chosen) {
     feedbackEl.textContent = '✓ Correct !';
     feedbackEl.className = 'feedback good show';
     playSFX('sfx_correct');
-    // pages 3/4/5: reveal hidden Korean text
     const revealEl = document.getElementById('p' + page + 'RevealText');
     if (revealEl) revealEl.style.visibility = 'visible';
     if (page === 10) {
@@ -872,10 +682,7 @@ function checkMCQ(page, btn, chosen) {
     btn.classList.add('wrong');
     feedbackEl.textContent = '✗ Réessayez !';
     feedbackEl.className = 'feedback show';
-    playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
-    if (page === 10) {
-      // 힌트버튼은 처음부터 보임 — 오답 시 아무 추가 동작 없음
-    }
+    playSFX('sfx_wrong');
     setTimeout(() => {
       btn.classList.remove('wrong');
       feedbackEl.textContent = '';
@@ -884,98 +691,70 @@ function checkMCQ(page, btn, chosen) {
   }
 }
 
-/* ════════════════════════════════════════════════
-   PAGE 2 — MATCHING
-════════════════════════════════════════════════ */
+/* ════ MATCHING ════ */
 const MATCH_PAIRS = [
-  { kr: '한국',   fr: 'Corée du Sud' },
-  { kr: '사람',   fr: 'personne' },
-  { kr: '지금',   fr: 'actuellement' },
-  { kr: '은행',   fr: 'banque' },
-  { kr: '회사',   fr: 'lieu de travail' },
-  { kr: '가깝다', fr: 'être près' },
+  { kr: '한국',   fr: 'Corée du Sud'   },
+  { kr: '사람',   fr: 'personne'       },
+  { kr: '지금',   fr: 'actuellement'   },
+  { kr: '은행',   fr: 'banque'         },
+  { kr: '회사',   fr: 'lieu de travail'},
+  { kr: '가깝다', fr: 'être près'      },
 ];
-
-let matchState = {
-  selectedKR: null,
-  selectedFR: null,
-  matchedCount: 0,
-};
+let matchState = { selectedKR: null, selectedFR: null, matchedCount: 0 };
 
 function initMatchPage() {
   matchState = { selectedKR: null, selectedFR: null, matchedCount: 0 };
   const krCol = document.getElementById('krCol');
   const frCol = document.getElementById('frCol');
   krCol.innerHTML = ''; frCol.innerHTML = '';
-
-  // Shuffle FR
   const frShuffled = [...MATCH_PAIRS].sort(() => Math.random() - 0.5);
-
   MATCH_PAIRS.forEach(pair => {
-    const krEl = document.createElement('div');
-    krEl.className = 'match-item kr';
-    krEl.textContent = pair.kr;
-    krEl.dataset.value = pair.kr;
-    krEl.addEventListener('click', () => selectMatchItem('kr', krEl));
-    krCol.appendChild(krEl);
+    const el = document.createElement('div');
+    el.className = 'match-item kr';
+    el.textContent = pair.kr; el.dataset.value = pair.kr;
+    el.addEventListener('click', () => selectMatchItem('kr', el));
+    krCol.appendChild(el);
   });
-
   frShuffled.forEach(pair => {
-    const frEl = document.createElement('div');
-    frEl.className = 'match-item fr';
-    frEl.textContent = pair.fr;
-    frEl.dataset.value = pair.fr;
-    frEl.addEventListener('click', () => selectMatchItem('fr', frEl));
-    frCol.appendChild(frEl);
+    const el = document.createElement('div');
+    el.className = 'match-item fr';
+    el.textContent = pair.fr; el.dataset.value = pair.fr;
+    el.addEventListener('click', () => selectMatchItem('fr', el));
+    frCol.appendChild(el);
   });
 }
 
 function selectMatchItem(side, el) {
   if (el.classList.contains('matched')) return;
-
-  // Deselect same-side prev
   if (side === 'kr') {
     if (matchState.selectedKR) matchState.selectedKR.classList.remove('selected');
-    el.classList.add('selected');
-    matchState.selectedKR = el;
+    el.classList.add('selected'); matchState.selectedKR = el;
   } else {
     if (matchState.selectedFR) matchState.selectedFR.classList.remove('selected');
-    el.classList.add('selected');
-    matchState.selectedFR = el;
+    el.classList.add('selected'); matchState.selectedFR = el;
   }
-
-  // Check pair
   if (matchState.selectedKR && matchState.selectedFR) {
     const krVal = matchState.selectedKR.dataset.value;
     const frVal = matchState.selectedFR.dataset.value;
-    const pair = MATCH_PAIRS.find(p => p.kr === krVal);
-
+    const pair  = MATCH_PAIRS.find(p => p.kr === krVal);
     if (pair && pair.fr === frVal) {
-      // Correct pair
-      matchState.selectedKR.classList.remove('selected');
-      matchState.selectedFR.classList.remove('selected');
-      matchState.selectedKR.classList.add('matched');
-      matchState.selectedFR.classList.add('matched');
-      matchState.selectedKR = null;
-      matchState.selectedFR = null;
-      playSFX('sfx_correct');  // 정답 — Tone.js Sine C5
+      matchState.selectedKR.classList.remove('selected'); matchState.selectedKR.classList.add('matched');
+      matchState.selectedFR.classList.remove('selected'); matchState.selectedFR.classList.add('matched');
+      matchState.selectedKR = null; matchState.selectedFR = null;
+      playSFX('sfx_correct');
       matchState.matchedCount++;
       if (matchState.matchedCount === MATCH_PAIRS.length) {
-        // 전체 완료 시 화음
         if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");
         document.getElementById('matchFeedback').textContent = '✓ Parfait, tout est correct !';
         document.getElementById('matchFeedback').className = 'feedback good show';
         document.getElementById('p2Next').disabled = false;
       }
     } else {
-      // Wrong — flash, reset both
       matchState.selectedKR.classList.add('wrong-flash');
       matchState.selectedFR.classList.add('wrong-flash');
-      playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
-      const kr = matchState.selectedKR;
-      const fr = matchState.selectedFR;
-      matchState.selectedKR = null;
-      matchState.selectedFR = null;
+      playSFX('sfx_wrong');
+      const kr = matchState.selectedKR, fr = matchState.selectedFR;
+      matchState.selectedKR = null; matchState.selectedFR = null;
       setTimeout(() => {
         kr.classList.remove('wrong-flash', 'selected');
         fr.classList.remove('wrong-flash', 'selected');
@@ -984,32 +763,23 @@ function selectMatchItem(side, el) {
   }
 }
 
-/* ════════════════════════════════════════════════
-   PAGE 9 — FILL IN THE BLANKS
-   Sentence: 저는 김민수__. 한국 __이에요. __ 서울_ 있어요. 서울은행__ ___. 회사는 집에서 ____.
-   Answers in order: 예요 / 사람 / 지금 / 에 / 에서 / 일해요 / 가까워요
-════════════════════════════════════════════════ */
-const FILL_BLANKS = ['예요', '사람', '지금', '에', '에서', '일해요', '가까워요'];
-const WORD_BANK_WORDS = [
-  '이에요','지금','은','레','가까워요','이래요','에서','에요','살암','가까요','에','사람','예요','가','에는','다녀요','일해요'
-];
-
-// Sentence template — segments and blank positions
-// We'll build as segments: text nodes and blank slots
+/* ════ FILL IN THE BLANKS ════ */
+const FILL_BLANKS = ['예요','사람','지금','에','에서','일해요','가까워요'];
+const WORD_BANK_WORDS = ['이에요','지금','은','레','가까워요','이래요','에서','에요','살암','가까요','에','사람','예요','가','에는','다녀요','일해요'];
 const FILL_SEGMENTS = [
   { text: '저는 김민수' }, { blank: 0 }, { text: '. 한국 ' }, { blank: 1 },
-  { text: '이에요. ' }, { blank: 2 }, { text: ' 서울' }, { blank: 3 },
+  { text: '이에요. ' },    { blank: 2 }, { text: ' 서울' }, { blank: 3 },
   { text: ' 있어요. 서울은행' }, { blank: 4 }, { text: ' ' }, { blank: 5 },
   { text: '. 회사는 집에서 ' }, { blank: 6 }, { text: '.' },
 ];
 
-let fillAnswers = [null, null, null, null, null, null, null]; // current fills
-let fillValidated = [false, false, false, false, false, false, false];
-let selectedBlank = null; // index of currently selected blank
+let fillAnswers   = new Array(7).fill(null);
+let fillValidated = new Array(7).fill(false);
+let selectedBlank = null;
 
 function initFillPage() {
-  fillAnswers = [null, null, null, null, null, null, null];
-  fillValidated = [false, false, false, false, false, false, false];
+  fillAnswers   = new Array(7).fill(null);
+  fillValidated = new Array(7).fill(false);
   selectedBlank = null;
   renderFillSentence();
   renderWordBank();
@@ -1023,36 +793,27 @@ function renderFillSentence() {
     if (seg.text !== undefined) {
       container.appendChild(document.createTextNode(seg.text));
     } else {
-      const idx = seg.blank;
+      const idx  = seg.blank;
       const slot = document.createElement('span');
       slot.dataset.idx = idx;
-      // 정답 글자 수에 비례한 너비 설정 (1자당 1.6em, 최소 1.8em)
-      const charCount = FILL_BLANKS[idx].length;
-      slot.style.width = Math.max(1.8, charCount * 1.6) + 'em';
-
-      // 슬롯은 항상 동일한 고정 너비 — 내용에 따라 클래스만 변경
+      slot.style.width = Math.max(1.8, FILL_BLANKS[idx].length * 1.6) + 'em';
       if (fillValidated[idx]) {
-        slot.className = 'blank-slot correct';
+        slot.className   = 'blank-slot correct';
         slot.textContent = fillAnswers[idx];
       } else if (fillAnswers[idx]) {
-        slot.className = 'blank-slot filled' + (idx === selectedBlank ? ' selected-blank' : '');
+        slot.className   = 'blank-slot filled' + (idx === selectedBlank ? ' selected-blank' : '');
         slot.textContent = fillAnswers[idx];
         slot.addEventListener('click', () => {
-          fillAnswers[idx] = null;
-          selectedBlank = idx;
-          renderFillSentence();
-          renderWordBank();
+          fillAnswers[idx] = null; selectedBlank = idx;
+          renderFillSentence(); renderWordBank();
         });
       } else {
-        slot.className = 'blank-slot empty-indicator' + (idx === selectedBlank ? ' selected-blank' : '');
-        slot.textContent = '';  // 빈 슬롯 — 너비는 CSS width:6em 고정이므로 흔들림 없음
+        slot.className   = 'blank-slot' + (idx === selectedBlank ? ' selected-blank' : '');
+        slot.textContent = '';
         slot.addEventListener('click', () => {
-          selectedBlank = idx;
-          renderFillSentence();
-          renderWordBank();
+          selectedBlank = idx; renderFillSentence(); renderWordBank();
         });
       }
-
       container.appendChild(slot);
     }
   });
@@ -1065,93 +826,50 @@ function renderWordBank() {
     const chip = document.createElement('div');
     chip.className = 'word-chip';
     chip.textContent = word;
-    // Check if used
-    const used = fillAnswers.some(a => a === word && FILL_BLANKS[fillAnswers.indexOf(a)] !== undefined);
-    // More precise: check if word is placed in any non-validated slot
-    const usedInSlot = fillAnswers.findIndex(a => a === word);
-    if (usedInSlot !== -1) {
-      chip.classList.add('used');
-    } else {
-      chip.addEventListener('click', () => placeWord(word));
-    }
+    if (fillAnswers.includes(word)) { chip.classList.add('used'); }
+    else { chip.addEventListener('click', () => placeWord(word)); }
     bank.appendChild(chip);
   });
 }
 
-function returnWordToBank(word) {
-  // Just re-render bank without the word being in fillAnswers
-  // Since fillAnswers will be updated before render
-}
-
 function placeWord(word) {
   if (selectedBlank === null) {
-    // Select first empty blank
     const first = fillAnswers.findIndex((a, i) => a === null && !fillValidated[i]);
     if (first === -1) return;
     selectedBlank = first;
   }
   if (fillValidated[selectedBlank]) return;
-
-  // If blank already has a word, return it
-  if (fillAnswers[selectedBlank]) {
-    // word returns to bank automatically when re-rendered
-  }
-
   fillAnswers[selectedBlank] = word;
 
-  // Check if correct
   if (word === FILL_BLANKS[selectedBlank]) {
     fillValidated[selectedBlank] = true;
-    playSFX('sfx_correct');  // 정답 — Tone.js Sine C5
-    // Move selectedBlank to next empty
+    playSFX('sfx_correct');
     let next = fillAnswers.findIndex((a, i) => i > selectedBlank && !fillValidated[i] && a === null);
     if (next === -1) next = fillAnswers.findIndex((a, i) => !fillValidated[i] && a === null);
     selectedBlank = next === -1 ? null : next;
-    // Check all done
     if (fillValidated.every(v => v)) {
-      if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");  // 전체 완료 화음
+      if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");
       document.getElementById('p9Feedback').textContent = '✓ Excellent, tout est correct !';
       document.getElementById('p9Feedback').className = 'feedback good show';
       document.getElementById('p9Next').disabled = false;
       selectedBlank = null;
     }
+    renderFillSentence(); renderWordBank();
   } else {
-    // Wrong — flash then reset this blank
-    renderFillSentence();
-    renderWordBank();
-    playSFX('sfx_wrong');  // 오답 — Tone.js Triangle C4
+    renderFillSentence(); renderWordBank();
+    playSFX('sfx_wrong');
     setTimeout(() => {
-      fillAnswers[selectedBlank !== null ? selectedBlank : fillAnswers.lastIndexOf(word)] = null;
-      // find the slot that has this wrong word
-      const wrongIdx = fillAnswers.indexOf(word);
-      // actually since we set it, find it by iterating
       for (let i = 0; i < fillAnswers.length; i++) {
-        if (fillAnswers[i] === word && !fillValidated[i]) {
-          fillAnswers[i] = null;
-          break;
-        }
+        if (fillAnswers[i] === word && !fillValidated[i]) { fillAnswers[i] = null; break; }
       }
-      renderFillSentence();
-      renderWordBank();
+      renderFillSentence(); renderWordBank();
     }, 700);
-    return;
   }
-
-  renderFillSentence();
-  renderWordBank();
 }
 
-/* ════════════════════════════════════════════════
-   INIT
-════════════════════════════════════════════════ */
+/* ════ INIT ════ */
 initMatchPage();
 initFillPage();
-
-// Re-init match page when navigating to p2 (in case of back)
-// We track if p2 already completed
-let p2Done = false;
-const origGoToPage = goToPage;
-
 </script>
 </body>
 </html>
