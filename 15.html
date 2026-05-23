@@ -657,28 +657,34 @@ function playLessonComplete() { if (toneReady && completionSynth) completionSynt
      p7=sentence2, p8=sentence3, p9=sentence4, p10=sentence5, p11=sentence6
    전체 → p12, p13
 */
-const _P3  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389150/15-1_r8ta5q.mp3';  // Part A: 안녕하세요. 부산 도서관 이용 안내 말씀드립니다.
-const _P4  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389151/15-2_zcynmj.mp3';  // Part B: 책을 빌리시려면... 신청하실 수 있습니다.
-const _P5  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389154/15-3_qyum1u.mp3';  // Part C: 책은 한 번에... 반납해야 합니다.
-const _P6  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389161/15-4_eb205c.mp3';  // Part D: 일주일 안에... 감사합니다.
-const _S5  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389156/15-5_btdotm.mp3';  // sentence 5: 책은 한 번에 다섯 권까지...
-const _S6  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389158/15-6_xx37tq.mp3';  // sentence 6: 일주일 안에 반납할 수 없을 때는...
-const _S7  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389163/15-7_oa3xcw.mp3';  // sentence 7 / misc
+// 문장별 오디오 (1:1 대응)
+const _S1  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389150/15-1_r8ta5q.mp3';  // (1) 안녕하세요.
+const _S2  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389151/15-2_zcynmj.mp3';  // (2) 부산 도서관 이용 안내 말씀드립니다.
+const _S3  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389154/15-3_qyum1u.mp3';  // (3) 책을 빌리시려면 회원증이 있어야 합니다.
+const _S4  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389161/15-4_eb205c.mp3';  // (4) 회원증은 도서관 안내 데스크에서 신청하실 수 있습니다.
+const _S5  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389156/15-5_btdotm.mp3';  // (5) 책은 한 번에 다섯 권까지 빌릴 수 있고, 일주일 안에 반납해야 합니다.
+const _S6  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389158/15-6_xx37tq.mp3';  // (6) 일주일 안에 반납할 수 없을 때는 전화나 인터넷으로 연장할 수 있습니다.
+const _S7  = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389163/15-7_oa3xcw.mp3';  // (7) 감사합니다.
 const _ALL = 'https://res.cloudinary.com/de76i94ia/video/upload/v1779389166/lec%CC%A7on_15_rgnj93.wav'; // 전체 본문
 
+// Part 묶음: 순차 재생 키 배열로 정의
+// playAudio(key) 는 단일 파일, playSequence(keys) 는 순차 재생
 const AUDIO = {
-  p3_audio:  _P3,   // Page 3  (text hidden) → Part A
-  p4_audio:  _P4,   // Page 4  (text hidden) → Part B
-  p5_audio:  _P5,   // Page 5  (text hidden) → Part C
-  p6_audio:  _P6,   // Page 6  (text hidden) → Part D
-  p7_audio:  _P3,   // Page 7  (text & audio) → sentence 2 ≈ Part A audio
-  p8_audio:  _P4,   // Page 8  (text & audio) → sentence 3 (Part B first half)
-  p9_audio:  _S7,   // Page 9  (text & audio) → sentence 4 (15-7)
-  p10_audio: _S5,   // Page 10 (text & audio) → sentence 5 (15-5)
-  p11_audio: _S6,   // Page 11 (text & audio) → sentence 6 (15-6)
-  p12_audio: _ALL,  // Page 12 (fill blanks)  → 전체
-  p13_audio: _ALL,  // Page 13 (re-listen)    → 전체
+  p3_audio:  ['_S1','_S2'],  // Part A: (1)+(2)
+  p4_audio:  ['_S3','_S4'],  // Part B: (3)+(4)
+  p5_audio:  ['_S5'],        // Part C: (5)
+  p6_audio:  ['_S6','_S7'],  // Part D: (6)+(7)
+  p7_audio:  ['_S2'],        // Page 7 Exercice 3: sentence (2)
+  p8_audio:  ['_S3'],        // Page 8 Exercice 3: sentence (3)
+  p9_audio:  ['_S4'],        // Page 9 Exercice 3: sentence (4)
+  p10_audio: ['_S5'],        // Page 10 Exercice 3: sentence (5)
+  p11_audio: ['_S6'],        // Page 11 Exercice 3: sentence (6)
+  p12_audio: ['_ALL'],       // Page 12 fill blanks: 전체
+  p13_audio: ['_ALL'],       // Page 13 re-listen: 전체
 };
+
+// 문장 URL 조회 맵
+const AUDIO_URLS = { _S1, _S2, _S3, _S4, _S5, _S6, _S7, _ALL };
 
 const PAGE_AUDIO_KEY = {
   3:'p3_audio', 4:'p4_audio', 5:'p5_audio', 6:'p6_audio',
@@ -686,13 +692,29 @@ const PAGE_AUDIO_KEY = {
   11:'p11_audio', 12:'p12_audio', 13:'p13_audio',
 };
 
+let sequenceQueue = [];
+
 function playAudio(key) {
-  const src = AUDIO[key]; if (!src) return;
+  const keys = AUDIO[key]; if (!keys || !keys.length) return;
   stopAudio();
+  sequenceQueue = [...keys];
+  playNextInSequence();
+}
+
+function playNextInSequence() {
+  if (!sequenceQueue.length) return;
+  const urlKey = sequenceQueue.shift();
+  const src = AUDIO_URLS[urlKey]; if (!src) return;
   currentAudio = new Audio(src);
+  currentAudio.addEventListener('ended', () => {
+    currentAudio = null;
+    playNextInSequence();
+  });
   currentAudio.play().catch(e => console.warn('Audio:', e));
 }
+
 function stopAudio() {
+  sequenceQueue = [];
   if (audioTimeoutId) { clearTimeout(audioTimeoutId); audioTimeoutId = null; }
   if (currentAudio)   { currentAudio.pause(); currentAudio.currentTime = 0; currentAudio = null; }
 }
