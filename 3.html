@@ -23,8 +23,6 @@
     --shadow:       rgba(45,134,83,0.15);
     --radius:       1.2vw;
     --radius-sm:    0.7vw;
-    --spk-a:        #2563eb;  /* 가/홀수 문장 — 파랑 */
-    --spk-b:        #dc2626;  /* 나/짝수 문장 — 빨강 */
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -116,21 +114,13 @@
     margin-bottom: 2vh; flex-shrink: 0;
   }
 
-  /* 카드 텍스트: 문장별 줄바꿈을 위해 flex-col 구조 사용 */
-  .card-lines {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.3vh;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: clamp(1rem, 2.4vw, 1.5rem);
-    font-weight: 700;
-    line-height: 1.6;
+  .card-text {
+    font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+    font-weight: 700; color: var(--green-dark);
     text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
   }
-  .card-lines .line-a { color: var(--spk-a); }
-  .card-lines .line-b { color: var(--spk-b); }
-  .card-lines .line-n { color: var(--green-dark); } /* 색 없음 (단독 화자) */
 
   .audio-btn {
     background: var(--green-mid);
@@ -359,12 +349,7 @@
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <!-- 가(1)=파랑, 나(2)=빨강 / visibility:hidden → 정답 시 공개 -->
-        <div id="p3RevealText" style="visibility:hidden;">
-          <div class="card-lines">
-            <span class="line-a">안녕하세요? 저는 김민수예요.</span>
-            <span class="line-b">저는 이수미예요. 반가워요.</span>
-          </div>
-        </div>
+        <div class="card-text" id="p3RevealText" style="visibility:hidden;"><span style="color:#2563eb;">안녕하세요? 저는 김민수예요.</span><br><span style="color:#dc2626;">저는 이수미예요. 반가워요.</span></div>
       </div>
       <div class="options-list" id="p3Options">
         <button class="option-btn" onclick="checkMCQ(3,this,1)">1. Ils parlent de leur famille.</button>
@@ -389,13 +374,7 @@
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <!-- 가(3,5)=파랑, 나(4)=빨강 -->
-        <div id="p4RevealText" style="visibility:hidden;">
-          <div class="card-lines">
-            <span class="line-a">수미 씨는 무슨 일을 하세요?</span>
-            <span class="line-b">저는 한국 대학교 직원이에요. 민수 씨는요?</span>
-            <span class="line-a">저는 한국 대학교 학생이에요. 영어를 공부해요.</span>
-          </div>
-        </div>
+        <div class="card-text" id="p4RevealText" style="visibility:hidden;"><span style="color:#2563eb;">수미 씨는 무슨 일을 하세요?</span><br><span style="color:#dc2626;">저는 한국 대학교 직원이에요. 민수 씨는요?</span><br><span style="color:#2563eb;">저는 한국 대학교 학생이에요. 영어를 공부해요.</span></div>
       </div>
       <div class="options-list" id="p4Options">
         <button class="option-btn" onclick="checkMCQ(4,this,1)">1. Ils parlent de leurs loisirs.</button>
@@ -419,9 +398,7 @@
         <button class="audio-btn" onclick="playAudio('p5_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <div class="card-lines">
-          <span class="line-a">안녕하세요? 저는 김민수예요.</span>
-        </div>
+        <div class="card-text">안녕하세요? 저는 김민수예요.</div>
       </div>
       <div class="options-list" id="p5Options">
         <button class="option-btn" onclick="checkMCQ(5,this,1)">1. Bonsoir, je m'appelle Kim Minsu.</button>
@@ -445,9 +422,7 @@
         <button class="audio-btn" onclick="playAudio('p6_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <div class="card-lines">
-          <span class="line-b">저는 이수미예요. 반가워요.</span>
-        </div>
+        <div class="card-text">저는 이수미예요. 반가워요.</div>
       </div>
       <div class="options-list" id="p6Options">
         <button class="option-btn" onclick="checkMCQ(6,this,1)">1. Je m'appelle Lee Sumi. Je suis désolée.</button>
@@ -471,9 +446,7 @@
         <button class="audio-btn" onclick="playAudio('p7_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <div class="card-lines">
-          <span class="line-a">수미 씨는 무슨 일을 하세요?</span>
-        </div>
+        <div class="card-text">수미 씨는 무슨 일을 하세요?</div>
       </div>
       <div class="options-list" id="p7Options">
         <button class="option-btn" onclick="checkMCQ(7,this,1)">1. Où habitez-vous, Sumi ?</button>
@@ -497,9 +470,7 @@
         <button class="audio-btn" onclick="playAudio('p8_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <div class="card-lines">
-          <span class="line-b">저는 한국 대학교 직원이에요. 민수 씨는요?</span>
-        </div>
+        <div class="card-text">저는 한국 대학교 직원이에요. 민수 씨는요?</div>
       </div>
       <div class="options-list" id="p8Options">
         <button class="option-btn" onclick="checkMCQ(8,this,1)">1. Je suis étudiante à l'Université de Corée. Et vous, Minsu ?</button>
@@ -523,9 +494,7 @@
         <button class="audio-btn" onclick="playAudio('p9_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <div class="card-lines">
-          <span class="line-a">저는 한국 대학교 학생이에요. 영어를 공부해요.</span>
-        </div>
+        <div class="card-text">저는 한국 대학교 학생이에요. 영어를 공부해요.</div>
       </div>
       <div class="options-list" id="p9Options">
         <button class="option-btn" onclick="checkMCQ(9,this,1)">1. Je suis étudiant à l'Université de Corée. J'étudie le coréen.</button>
@@ -570,14 +539,7 @@
         <button class="audio-btn" onclick="playAudio('p11_audio')" title="Écouter">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
-        <div class="card-lines" style="font-size:clamp(0.85rem,1.8vw,1.1rem);">
-          <span class="line-a">안녕하세요? 저는 김민수예요.</span>
-          <span class="line-b">저는 이수미예요. 반가워요.</span>
-          <span class="line-a">수미 씨는 무슨 일을 하세요?</span>
-          <span class="line-b">저는 한국 대학교 직원이에요. 민수 씨는요?</span>
-          <span class="line-a">저는 한국 대학교 학생이에요. 영어를 공부해요.</span>
-        </div>
-      </div>
+        <div class="card-text"><span style="color:#2563eb;">안녕하세요? 저는 김민수예요.</span><br><span style="color:#dc2626;">저는 이수미예요. 반가워요.</span><br><span style="color:#2563eb;">수미 씨는 무슨 일을 하세요?</span><br><span style="color:#dc2626;">저는 한국 대학교 직원이에요. 민수 씨는요?</span><br><span style="color:#2563eb;">저는 한국 대학교 학생이에요. 영어를 공부해요.</span></div>      </div>
       <div class="options-list" id="p11Options">
         <button class="option-btn" onclick="checkMCQ(11,this,1)">1. 수미 씨는 학생이에요.</button>
         <button class="option-btn" onclick="checkMCQ(11,this,2)">2. 민수 씨는 대학교에서 영어를 공부해요.</button>
@@ -873,10 +835,14 @@ const FILL_BLANKS    = ['하세요','예요','반가워요','일을','직원','�
 const WORD_BANK_WORDS = ['이세요','예요','일을','는요','이에요','한생','하세요','은요','반가워요','반가와요','일은','직원','지권','학생','해요'];
 const FILL_SEGMENTS  = [
   { text: '안녕' }, { blank: 0 }, { text: '? 저는 김민수예요.' },
-  { text: ' 저는 이수미' }, { blank: 1 }, { text: '. ' }, { blank: 2 }, { text: '.' },
-  { text: ' 수미 씨는 무슨 ' }, { blank: 3 }, { text: ' 하세요?' },
-  { text: ' 저는 한국 대학교 ' }, { blank: 4 }, { text: '이에요. 민수 씨' }, { blank: 5 }, { text: '?' },
-  { text: ' 저는 한국 대학교 ' }, { blank: 6 }, { text: '이에요. 영어를 공부' }, { blank: 7 }, { text: '.' },
+  { br: true },
+  { text: '저는 이수미' }, { blank: 1 }, { text: '. ' }, { blank: 2 }, { text: '.' },
+  { br: true },
+  { text: '수미 씨는 무슨 ' }, { blank: 3 }, { text: ' 하세요?' },
+  { br: true },
+  { text: '저는 한국 대학교 ' }, { blank: 4 }, { text: '이에요. 민수 씨' }, { blank: 5 }, { text: '?' },
+  { br: true },
+  { text: '저는 한국 대학교 ' }, { blank: 6 }, { text: '이에요. 영어를 공부' }, { blank: 7 }, { text: '.' },
 ];
 
 let fillAnswers   = new Array(8).fill(null);
@@ -896,7 +862,9 @@ function renderFillSentence() {
   const container = document.getElementById('fillSentence');
   container.innerHTML = '';
   FILL_SEGMENTS.forEach(seg => {
-    if (seg.text !== undefined) {
+    if (seg.br) {
+      container.appendChild(document.createElement('br'));
+    } else if (seg.text !== undefined) {
       container.appendChild(document.createTextNode(seg.text));
     } else {
       const idx  = seg.blank;
