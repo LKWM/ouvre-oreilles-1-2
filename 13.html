@@ -176,6 +176,21 @@
   .word-chip:hover { background: var(--green-pale); border-color: var(--green-light); }
   .word-chip.used  { opacity: 0.3; cursor: default; pointer-events: none; }
 
+  /* PAGE 12 — 빈칸 채우기: 6줄 + 워드뱅크 → 축소 적용 */
+  #page12 .consigne { margin-bottom: 0.6vh; }
+  #page12 .card { padding: 1.2vh 4vw; margin-bottom: 1vh; }
+  #page12 .fill-sentence {
+    font-size: clamp(0.8rem, 1.6vw, 1.05rem);
+    line-height: 2.0;
+    margin-bottom: 0.8vh;
+  }
+  #page12 .word-bank { gap: 0.6vh 1vw; }
+  #page12 .word-chip {
+    font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+    padding: 0.45vh 1.4vw;
+  }
+  #page12 .feedback { margin-top: 0.4vh; height: 2vh; }
+
   #page14 { gap: 2.5vh; text-align: center; padding: 4vh 6vw; }
   .outro-emoji { font-size: clamp(2.5rem, 8vw, 6rem); flex-shrink: 0; }
   .outro-title { font-size: clamp(1.3rem, 3.5vw, 2.5rem); font-weight: 900; color: var(--green-dark); line-height: 1.2; }
