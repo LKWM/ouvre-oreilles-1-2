@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 16 - Au bureau</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  :root {
+    --green-dark:   #1a5c3a;
+    --green-mid:    #2d8653;
+    --green-light:  #4caf80;
+    --green-pale:   #d4f0e2;
+    --green-card:   #eaf8f1;
+    --accent:       #f5a623;
+    --accent2:      #ff6b6b;
+    --text-dark:    #1a2e25;
+    --text-mid:     #3a5c46;
+    --text-light:   #7aaa8f;
+    --border:       #b8dfc9;
+    --shadow:       rgba(45,134,83,0.15);
+    --radius:       1.2vw;
+    --radius-sm:    0.7vw;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #e8f8f0 0%, #c8eedd 50%, #d8f4e8 100%);
+    color: var(--text-dark);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #lesson {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+
+  .page {
+    display: none; width: 100%; height: 100%;
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 3vh 4vw;
+  }
+  .page.active { display: flex; }
+  .page.has-bar { padding-bottom: 0; }
+
+  .bottom-bar {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2vh 3vw;
+    background: rgba(255,255,255,0.7);
+    border-top: 0.15vh solid var(--border);
+    flex-shrink: 0;
+  }
+  .bottom-bar .nav-btn {
+    background: var(--green-mid); color: #fff; border: none;
+    border-radius: var(--radius-sm); padding: 1vh 4vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    font-weight: 700; cursor: pointer;
+    transition: background 0.2s, transform 0.1s; letter-spacing: 0.03em;
+  }
+  .bottom-bar .nav-btn:hover { background: var(--green-dark); transform: scale(1.04); }
+  .bottom-bar .nav-btn:disabled { background: #b8dfc9; cursor: not-allowed; transform: none; opacity: 0.5; }
+  .bottom-bar .page-indicator { font-size: clamp(0.85rem, 1.8vw, 1.1rem); color: var(--text-mid); font-weight: 700; }
+
+  .page-content {
+    flex: 1; width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; overflow: hidden;
+  }
+
+  .lesson-label { font-size: clamp(0.8rem, 1.8vw, 1.1rem); font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--green-light); margin-bottom: 0.8vh; }
+  .lesson-title { font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 900; color: var(--green-dark); text-align: center; line-height: 1.15; }
+  .consigne { font-size: clamp(1rem, 2.2vw, 1.4rem); font-weight: 700; color: var(--text-mid); text-align: center; margin-bottom: 1.5vh; letter-spacing: 0.01em; }
+
+  .card {
+    background: var(--green-card); border: 0.15vh solid var(--border);
+    border-radius: var(--radius); padding: 2.5vh 5vw;
+    width: 100%; max-width: 88vw;
+    display: flex; align-items: center; justify-content: center; gap: 3vw;
+    box-shadow: 0 0.4vh 1.5vh var(--shadow); margin-bottom: 2vh; flex-shrink: 0;
+  }
+  .card-text {
+    font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+    font-weight: 700; color: var(--green-dark);
+    text-align: center; font-family: 'Noto Sans KR', sans-serif; line-height: 1.6;
+  }
+
+  .audio-btn {
+    background: var(--green-mid); border: none; border-radius: 50%;
+    width: clamp(3rem, 7vw, 4.5rem); height: clamp(3rem, 7vw, 4.5rem);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; line-height: 1; cursor: pointer; flex-shrink: 0;
+    transition: background 0.2s, transform 0.15s; box-shadow: 0 0.3vh 0.8vh var(--shadow);
+  }
+  .audio-btn:hover { background: var(--green-dark); transform: scale(1.08); }
+  .audio-btn svg { width: 45%; height: 45%; fill: #fff; display: block; }
+
+  .options-list { display: flex; flex-direction: column; gap: 1.2vh; width: 100%; max-width: 88vw; }
+  .option-btn {
+    background: #fff; border: 0.2vh solid var(--border);
+    border-radius: var(--radius-sm); padding: 1.4vh 3vw;
+    font-family: 'Nunito', sans-serif; font-size: clamp(0.9rem, 2vw, 1.15rem);
+    font-weight: 600; color: var(--text-dark); cursor: pointer; text-align: left;
+    transition: background 0.18s, border-color 0.18s; line-height: 1.4;
+  }
+  .option-btn:hover { background: var(--green-pale); border-color: var(--green-light); }
+  .option-btn.correct { background: #c8f5dc; border-color: var(--green-mid); color: var(--green-dark); }
+  .option-btn.wrong   { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
+  .option-btn:disabled { cursor: not-allowed; }
+
+  #page1 { gap: 2.5vh; }
+  .intro-deco {
+    width: clamp(4rem, 12vw, 8rem); height: clamp(4rem, 12vw, 8rem);
+    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: clamp(2rem, 6vw, 4rem); box-shadow: 0 0.5vh 2vh var(--shadow); flex-shrink: 0;
+  }
+  .start-btn {
+    margin-top: 1vh; background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: #fff; border: none; border-radius: var(--radius); padding: 1.8vh 8vw;
+    font-family: 'Nunito', sans-serif; font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: 800; letter-spacing: 0.06em; cursor: pointer;
+    box-shadow: 0 0.5vh 1.8vh var(--shadow); transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0.8vh 2.5vh rgba(45,134,83,0.3); }
+
+  .match-area { display: flex; gap: 3vw; width: 100%; max-width: 92vw; align-items: stretch; justify-content: center; }
+  .match-col { display: flex; flex-direction: column; gap: 1.2vh; flex: 1; align-items: stretch; }
+  .match-item {
+    background: #fff; border: 0.2vh solid var(--border); border-radius: var(--radius-sm);
+    padding: 1.2vh 2vw; font-size: clamp(0.9rem, 2vw, 1.2rem); font-weight: 700;
+    text-align: center; cursor: pointer; transition: background 0.18s, border-color 0.18s;
+    color: var(--text-dark); flex: 1; display: flex; align-items: center; justify-content: center;
+  }
+  .match-item.kr { font-family: 'Noto Sans KR', sans-serif; }
+  .match-item.fr { font-family: 'Nunito', sans-serif; }
+  .match-item:hover:not(.matched):not(.selected) { background: var(--green-pale); border-color: var(--green-light); }
+  .match-item.selected    { background: #fff3cc; border-color: var(--accent); }
+  .match-item.matched     { background: #c8f5dc; border-color: var(--green-mid); cursor: default; color: var(--green-dark); }
+  .match-item.wrong-flash { background: #ffe0e0; border-color: #ff6b6b; }
+
+  .fill-sentence {
+    font-size: clamp(0.95rem, 2vw, 1.3rem); font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif; color: var(--green-dark);
+    text-align: center; line-height: 2.6; max-width: 88vw; margin-bottom: 1.5vh;
+  }
+  .blank-slot {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 1.8em; height: 2em; padding: 0.1em 0.3em;
+    border-bottom: 0.22vh solid var(--green-mid); border-radius: 0.3em;
+    background: transparent; cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 1em; font-weight: 700;
+    color: var(--green-dark); transition: background 0.15s;
+    vertical-align: middle; margin: 0 0.15em; overflow: hidden; white-space: nowrap;
+  }
+  .blank-slot.filled        { background: #eaf8f1; border-color: var(--green-mid); border-radius: var(--radius-sm); }
+  .blank-slot.correct       { background: #c8f5dc; border-color: var(--green-mid); cursor: default; }
+  .blank-slot.wrong         { background: #ffe0e0; border-color: #ff6b6b; color: #c0392b; }
+  .blank-slot.selected-blank { outline: 0.2vh solid var(--accent); outline-offset: 1px; }
+
+  .word-bank { display: flex; flex-wrap: wrap; gap: 1vh 1.5vw; justify-content: center; max-width: 90vw; }
+  .word-chip {
+    background: #fff; border: 0.2vh solid var(--border); border-radius: 2vw; padding: 0.7vh 2vw;
+    font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+    font-weight: 700; cursor: pointer; color: var(--text-dark);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .word-chip:hover { background: var(--green-pale); border-color: var(--green-light); }
+  .word-chip.used  { opacity: 0.3; cursor: default; pointer-events: none; }
+
+  /* PAGE 13 — 빈칸 채우기: 6줄 + 워드뱅크 → 축소 적용 */
+  #page13 .consigne { margin-bottom: 0.6vh; }
+  #page13 .card { padding: 1.2vh 4vw; margin-bottom: 1vh; }
+  #page13 .fill-sentence {
+    font-size: clamp(0.8rem, 1.6vw, 1.05rem);
+    line-height: 2.0;
+    margin-bottom: 0.8vh;
+  }
+  #page13 .word-bank { gap: 0.6vh 1vw; }
+  #page13 .word-chip {
+    font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+    padding: 0.45vh 1.4vw;
+  }
+  #page13 .feedback { margin-top: 0.4vh; height: 2vh; }
+
+  #page15 { gap: 2.5vh; text-align: center; padding: 4vh 6vw; }
+  .outro-emoji { font-size: clamp(2.5rem, 8vw, 6rem); flex-shrink: 0; }
+  .outro-title { font-size: clamp(1.3rem, 3.5vw, 2.5rem); font-weight: 900; color: var(--green-dark); line-height: 1.2; }
+  .outro-body { font-size: clamp(0.9rem, 2vw, 1.2rem); font-weight: 600; color: var(--text-mid); line-height: 1.8; max-width: 72vw; text-align: center; }
+
+  .feedback {
+    font-size: clamp(0.8rem, 1.6vw, 1rem); font-weight: 700; color: var(--accent2);
+    text-align: center; height: 2.5vh; margin-top: 0.8vh; visibility: hidden; flex-shrink: 0;
+  }
+  .feedback.show { visibility: visible; }
+  .feedback.good { color: var(--green-mid); }
+
+  .divider { width: 4vw; height: 0.3vh; background: var(--green-light); border-radius: 1vw; flex-shrink: 0; }
+
+  .hint-area {
+    width: 100%; max-width: 88vw; min-height: 6vh; margin-top: 1.5vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6vh;
+  }
+  .hint-btn {
+    background: none; border: 0.15vh solid var(--green-light); border-radius: var(--radius-sm);
+    padding: 0.5vh 2vw; font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.8rem, 1.6vw, 1rem); font-weight: 700; color: var(--text-mid);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .hint-btn:hover { background: var(--green-pale); }
+  .hint-text-box {
+    font-size: clamp(0.75rem, 1.5vw, 0.95rem); color: var(--text-mid); font-style: italic;
+    text-align: center; line-height: 1.5; visibility: hidden; min-height: 2.5vh;
+  }
+  .hint-text-box.visible { visibility: visible; }
+</style>
+</head>
+<body>
+<div id="lesson">
+
+  <!-- PAGE 1 — INTRO -->
+  <div class="page active" id="page1">
+    <div class="intro-deco">🎧</div>
+    <div class="lesson-label" style="text-align:center;">Ouvre tes oreilles : de niveau 1 à niveau 2</div>
+    <div class="lesson-title">Leçon 16<br>Au bureau</div>
+    <div class="divider"></div>
+    <button class="start-btn" onclick="startLesson()">Commencer</button>
+  </div>
+
+  <!-- PAGE 2 — MATCHING -->
+  <div class="page has-bar" id="page2">
+    <div class="page-content">
+      <div class="consigne">Associez chaque mot coréen à sa traduction française.</div>
+      <div class="match-area" id="matchArea">
+        <div class="match-col" id="krCol"></div>
+        <div class="match-col" id="frCol"></div>
+      </div>
+      <div class="feedback" id="matchFeedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" id="p2Prev" disabled>◀ Précédent</button>
+      <span class="page-indicator">2 / 15</span>
+      <button class="nav-btn" id="p2Next" onclick="goToPage(3)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3 — MCQ text hidden (Part A: S1+S2+S3) -->
+  <div class="page has-bar" id="page3">
+    <div class="page-content">
+      <div class="consigne">Choisissez la bonne réponse.</div>
+      <div class="card" style="flex-direction:column; gap:1vh;">
+        <button class="audio-btn" onclick="playAudio('p3_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text" id="p3RevealText" style="visibility:hidden;"><span style="color:#2563eb;">김 대리님, 이 보고서 빨리 끝내야 하는데 도와줄 수 있어요?</span><br><span style="color:#dc2626;">지금 좀 바쁜데요. 마감이 언제예요?</span></div>
+      </div>
+      <div class="options-list" id="p3Options">
+        <button class="option-btn" onclick="checkMCQ(3,this,1)">1. Ils parlent d'une réunion à organiser.</button>
+        <button class="option-btn" onclick="checkMCQ(3,this,2)">2. Ils parlent d'un rapport à finir.</button>
+        <button class="option-btn" onclick="checkMCQ(3,this,3)">3. Ils parlent d'un projet à long terme.</button>
+      </div>
+      <div class="feedback" id="p3Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(2)">◀ Précédent</button>
+      <span class="page-indicator">3 / 15</span>
+      <button class="nav-btn" id="p3Next" onclick="goToPage(4)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 4 — MCQ text hidden (Part B: S4+S5) -->
+  <div class="page has-bar" id="page4">
+    <div class="page-content">
+      <div class="consigne">Choisissez la bonne réponse.</div>
+      <div class="card" style="flex-direction:column; gap:1vh;">
+        <button class="audio-btn" onclick="playAudio('p4_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text" id="p4RevealText" style="visibility:hidden;"><span style="color:#2563eb;">내일 아침 아홉 시까지예요.</span><br><span style="color:#dc2626;">그럼 제가 점심 시간 후에 도와드릴게요.</span></div>
+      </div>
+      <div class="options-list" id="p4Options">
+        <button class="option-btn" onclick="checkMCQ(4,this,1)">1. Ils parlent de l'heure d'une réunion.</button>
+        <button class="option-btn" onclick="checkMCQ(4,this,2)">2. Ils prennent un rendez-vous pour le déjeuner.</button>
+        <button class="option-btn" onclick="checkMCQ(4,this,3)">3. Ils se mettent d'accord sur le moment où elle va l'aider.</button>
+      </div>
+      <div class="feedback" id="p4Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(3)">◀ Précédent</button>
+      <span class="page-indicator">4 / 15</span>
+      <button class="nav-btn" id="p4Next" onclick="goToPage(5)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 5 — MCQ text hidden (Part C: S6+S7) -->
+  <div class="page has-bar" id="page5">
+    <div class="page-content">
+      <div class="consigne">Choisissez la bonne réponse.</div>
+      <div class="card" style="flex-direction:column; gap:1vh;">
+        <button class="audio-btn" onclick="playAudio('p5_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text" id="p5RevealText" style="visibility:hidden;"><span style="color:#2563eb;">정말요? 고마워요. 야근해야 할 것 같았는데 다행이에요.</span><br><span style="color:#dc2626;">같이 빨리 끝내요.</span></div>
+      </div>
+      <div class="options-list" id="p5Options">
+        <button class="option-btn" onclick="checkMCQ(5,this,1)">1. Ils parlent de leurs projets pour le week-end.</button>
+        <button class="option-btn" onclick="checkMCQ(5,this,2)">2. Il exprime son soulagement.</button>
+        <button class="option-btn" onclick="checkMCQ(5,this,3)">3. Elle annonce qu'elle ne peut finalement pas l'aider.</button>
+      </div>
+      <div class="feedback" id="p5Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(4)">◀ Précédent</button>
+      <span class="page-indicator">5 / 15</span>
+      <button class="nav-btn" id="p5Next" onclick="goToPage(6)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 6 — MCQ text & audio (Exercice 3 / S1) -->
+  <div class="page has-bar" id="page6">
+    <div class="page-content">
+      <div class="consigne">Choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p6_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">김 대리님, 이 보고서 빨리 끝내야 하는데 도와줄 수 있어요?</div>
+      </div>
+      <div class="options-list" id="p6Options">
+        <button class="option-btn" onclick="checkMCQ(6,this,1)">1. Kim, je dois terminer ce rapport demain, pouvez-vous m'aider ?</button>
+        <button class="option-btn" onclick="checkMCQ(6,this,2)">2. Kim, je dois vérifier ce rapport rapidement, pouvez-vous le soumettre ?</button>
+        <button class="option-btn" onclick="checkMCQ(6,this,3)">3. Kim, je dois terminer ce rapport rapidement, pouvez-vous m'aider ?</button>
+      </div>
+      <div class="feedback" id="p6Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(5)">◀ Précédent</button>
+      <span class="page-indicator">6 / 15</span>
+      <button class="nav-btn" id="p6Next" onclick="goToPage(7)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 7 — MCQ text & audio (Exercice 3 / S2) -->
+  <div class="page has-bar" id="page7">
+    <div class="page-content">
+      <div class="consigne">Choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p7_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">지금 좀 바쁜데요.</div>
+      </div>
+      <div class="options-list" id="p7Options">
+        <button class="option-btn" onclick="checkMCQ(7,this,1)">1. Je ne suis pas occupée en ce moment.</button>
+        <button class="option-btn" onclick="checkMCQ(7,this,2)">2. Je suis un peu occupée en ce moment.</button>
+        <button class="option-btn" onclick="checkMCQ(7,this,3)">3. Je ne suis pas disponible aujourd'hui.</button>
+      </div>
+      <div class="feedback" id="p7Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(6)">◀ Précédent</button>
+      <span class="page-indicator">7 / 15</span>
+      <button class="nav-btn" id="p7Next" onclick="goToPage(8)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 8 — MCQ text & audio (Exercice 3 / S3) -->
+  <div class="page has-bar" id="page8">
+    <div class="page-content">
+      <div class="consigne">Choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p8_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">마감이 언제예요?</div>
+      </div>
+      <div class="options-list" id="p8Options">
+        <button class="option-btn" onclick="checkMCQ(8,this,1)">1. Quel est le sujet du rapport ?</button>
+        <button class="option-btn" onclick="checkMCQ(8,this,2)">2. Combien de temps faut-il pour le finir ?</button>
+        <button class="option-btn" onclick="checkMCQ(8,this,3)">3. Quel est le délai ?</button>
+      </div>
+      <div class="feedback" id="p8Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(7)">◀ Précédent</button>
+      <span class="page-indicator">8 / 15</span>
+      <button class="nav-btn" id="p8Next" onclick="goToPage(9)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 9 — MCQ text & audio (Exercice 3 / S4) -->
+  <div class="page has-bar" id="page9">
+    <div class="page-content">
+      <div class="consigne">Choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p9_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">내일 아침 아홉 시까지예요.</div>
+      </div>
+      <div class="options-list" id="p9Options">
+        <button class="option-btn" onclick="checkMCQ(9,this,1)">1. C'est pour demain matin à neuf heures.</button>
+        <button class="option-btn" onclick="checkMCQ(9,this,2)">2. C'est pour ce matin à neuf heures.</button>
+        <button class="option-btn" onclick="checkMCQ(9,this,3)">3. C'est pour demain soir à neuf heures.</button>
+      </div>
+      <div class="feedback" id="p9Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(8)">◀ Précédent</button>
+      <span class="page-indicator">9 / 15</span>
+      <button class="nav-btn" id="p9Next" onclick="goToPage(10)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 10 — MCQ text & audio (Exercice 3 / S5) -->
+  <div class="page has-bar" id="page10">
+    <div class="page-content">
+      <div class="consigne">Choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p10_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">그럼 제가 점심 시간 후에 도와드릴게요.</div>
+      </div>
+      <div class="options-list" id="p10Options">
+        <button class="option-btn" onclick="checkMCQ(10,this,1)">1. Alors je vais vous aider avant le déjeuner.</button>
+        <button class="option-btn" onclick="checkMCQ(10,this,2)">2. Alors je vais vous aider après le déjeuner.</button>
+        <button class="option-btn" onclick="checkMCQ(10,this,3)">3. Alors je vais vous aider pendant le déjeuner.</button>
+      </div>
+      <div class="feedback" id="p10Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(9)">◀ Précédent</button>
+      <span class="page-indicator">10 / 15</span>
+      <button class="nav-btn" id="p10Next" onclick="goToPage(11)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 11 — MCQ text & audio (Exercice 3 / S6) -->
+  <div class="page has-bar" id="page11">
+    <div class="page-content">
+      <div class="consigne">Choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p11_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">정말요? 고마워요. 야근해야 할 것 같았는데 다행이에요.</div>
+      </div>
+      <div class="options-list" id="p11Options">
+        <button class="option-btn" onclick="checkMCQ(11,this,1)">1. Vraiment ? Merci. Je savais que je n'aurais pas à faire des heures supplémentaires.</button>
+        <button class="option-btn" onclick="checkMCQ(11,this,2)">2. Vraiment ? Merci. Je dois quand même faire des heures supplémentaires ce soir.</button>
+        <button class="option-btn" onclick="checkMCQ(11,this,3)">3. Vraiment ? Merci. Je pensais devoir faire des heures supplémentaires, quel soulagement.</button>
+      </div>
+      <div class="feedback" id="p11Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(10)">◀ Précédent</button>
+      <span class="page-indicator">11 / 15</span>
+      <button class="nav-btn" id="p11Next" onclick="goToPage(12)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 12 — MCQ text & audio (Exercice 3 / S7) -->
+  <div class="page has-bar" id="page12">
+    <div class="page-content">
+      <div class="consigne">Choisissez la traduction qui correspond.</div>
+      <div class="card" style="flex-direction:column; gap:0.8vh;">
+        <button class="audio-btn" onclick="playAudio('p12_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="card-text">같이 빨리 끝내요.</div>
+      </div>
+      <div class="options-list" id="p12Options">
+        <button class="option-btn" onclick="checkMCQ(12,this,1)">1. Finissons-le rapidement ensemble.</button>
+        <button class="option-btn" onclick="checkMCQ(12,this,2)">2. Finissez-le rapidement.</button>
+        <button class="option-btn" onclick="checkMCQ(12,this,3)">3. Cela vaut la peine de finir ensemble.</button>
+      </div>
+      <div class="feedback" id="p12Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(11)">◀ Précédent</button>
+      <span class="page-indicator">12 / 15</span>
+      <button class="nav-btn" id="p12Next" onclick="goToPage(13)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 13 — FILL IN THE BLANKS (Exercice 4) -->
+  <div class="page has-bar" id="page13">
+    <div class="page-content">
+      <div class="consigne">Écoutez l'enregistrement et complétez les blancs.</div>
+      <div class="card" style="flex-direction:column; align-items:center; gap:1.2vh;">
+        <button class="audio-btn" onclick="playAudio('p13_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="fill-sentence" id="fillSentence"></div>
+      </div>
+      <div class="word-bank" id="wordBank"></div>
+      <div class="feedback" id="p13Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(12)">◀ Précédent</button>
+      <span class="page-indicator">13 / 15</span>
+      <button class="nav-btn" id="p13Next" onclick="goToPage(14)" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 14 — RE-LISTEN MCQ (Exercice 5-1 / Card with audio only) -->
+  <div class="page has-bar" id="page14">
+    <div class="page-content">
+      <div class="consigne">Réécoutez l'extrait et choisissez l'affirmation correcte.</div>
+      <div class="card" style="justify-content:center;">
+        <button class="audio-btn" onclick="playAudio('p14_audio')" title="Écouter">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <div class="options-list" id="p14Options">
+        <button class="option-btn" onclick="checkMCQ(14,this,1)">1. 보고서 마감은 오늘 저녁 여섯 시입니다.</button>
+        <button class="option-btn" onclick="checkMCQ(14,this,2)">2. 김 대리는 점심 시간 전에 도와주기로 했습니다.</button>
+        <button class="option-btn" onclick="checkMCQ(14,this,3)">3. 보고서 마감은 내일 아침 아홉 시입니다.</button>
+      </div>
+      <div class="hint-area">
+        <button class="hint-btn" id="p14HintBtn" onclick="showHint(14)">💡 Voir l'indice</button>
+        <div class="hint-text-box" id="p14HintText">1. Le délai du rapport est ce soir à six heures. &nbsp;|&nbsp; 2. Kim a décidé d'aider avant le déjeuner. &nbsp;|&nbsp; 3. Le délai du rapport est demain matin à neuf heures.</div>
+      </div>
+      <div class="feedback" id="p14Feedback"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(13)">◀ Précédent</button>
+      <span class="page-indicator">14 / 15</span>
+      <button class="nav-btn" id="p14Next" onclick="goToOutro()" disabled>Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 15 — OUTRO -->
+  <div class="page" id="page15">
+    <div class="outro-emoji">🎉</div>
+    <div class="outro-title">Bravo, tu as terminé la leçon 16 !</div>
+    <div class="divider"></div>
+    <div class="outro-body">
+      Tu as écouté un dialogue au bureau et tu as pu comprendre comment<br>
+      demander de l'aide à un collègue, négocier un moment disponible<br>
+      et exprimer son soulagement.<br><br>
+      À demain pour la leçon 17. 화이팅 ! 💪
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ════ TONE.JS ════ */
+let correctSound = null, errorSound = null, completionSynth = null, transitionSynth = null;
+let toneReady = false, audioTimeoutId = null, currentAudio = null;
+
+async function initTone() {
+  if (toneReady) return;
+  await Tone.start();
+  correctSound    = new Tone.Synth({ oscillator: { type: 'sine'     } }).toDestination();
+  errorSound      = new Tone.Synth({ oscillator: { type: 'triangle' } }).toDestination();
+  completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+  transitionSynth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
+  }).toDestination();
+  transitionSynth.volume.value = -15;
+  toneReady = true;
+}
+
+function playSFX(type) {
+  if (!toneReady) return;
+  if (type === 'sfx_correct' && correctSound) correctSound.triggerAttackRelease('C5', '0.2s');
+  else if (type === 'sfx_wrong' && errorSound) errorSound.triggerAttackRelease('C4', '0.1s');
+}
+function playTransition() { if (toneReady && transitionSynth) transitionSynth.triggerAttackRelease('C6', '0.05s'); }
+function playLessonComplete() { if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n"); }
+
+/* ════ AUDIO ════
+   S1(가/파랑): 김 대리님, 이 보고서 빨리 끝내야 하는데 도와줄 수 있어요?
+   S2(나/빨강): 지금 좀 바쁜데요.
+   S3(나/빨강): 마감이 언제예요?
+   S4(가/파랑): 내일 아침 아홉 시까지예요.
+   S5(나/빨강): 그럼 제가 점심 시간 후에 도와드릴게요.
+   S6(가/파랑): 정말요? 고마워요. 야근해야 할 것 같았는데 다행이에요.
+   S7(나/빨강): 같이 빨리 끝내요.
+   Part A=S1+S2+S3 / Part B=S4+S5 / Part C=S6+S7
+*/
+const _S1 = 'https://res.cloudinary.com/de76i94ia/video/upload/v1785057843/16-1_e84x2x.mp3';
+const _S2 = 'https://res.cloudinary.com/de76i94ia/video/upload/v1785057843/16-2_s7qdzh.mp3';
+const _S3 = 'https://res.cloudinary.com/de76i94ia/video/upload/v1785057850/16-3_qthoir.mp3';
+const _S4 = 'https://res.cloudinary.com/de76i94ia/video/upload/v1785057861/16-4_kzf0hc.mp3';
+const _S5 = 'https://res.cloudinary.com/de76i94ia/video/upload/v1785057868/16-5_uukzlz.mp3';
+const _S6 = 'https://res.cloudinary.com/de76i94ia/video/upload/v1785057883/16-6_namdy7.mp3';
+const _S7 = 'https://res.cloudinary.com/de76i94ia/video/upload/v1785057887/16-7_btazru.mp3';
+
+const AUDIO_URLS = { _S1, _S2, _S3, _S4, _S5, _S6, _S7 };
+
+const AUDIO = {
+  p3_audio:  ['_S1','_S2','_S3'],
+  p4_audio:  ['_S4','_S5'],
+  p5_audio:  ['_S6','_S7'],
+  p6_audio:  ['_S1'],
+  p7_audio:  ['_S2'],
+  p8_audio:  ['_S3'],
+  p9_audio:  ['_S4'],
+  p10_audio: ['_S5'],
+  p11_audio: ['_S6'],
+  p12_audio: ['_S7'],
+  p13_audio: ['_S1','_S2','_S3','_S4','_S5','_S6','_S7'],
+  p14_audio: ['_S1','_S2','_S3','_S4','_S5','_S6','_S7'],
+};
+
+const PAGE_AUDIO_KEY = {
+  3:'p3_audio', 4:'p4_audio', 5:'p5_audio',
+  6:'p6_audio', 7:'p7_audio', 8:'p8_audio', 9:'p9_audio',
+  10:'p10_audio', 11:'p11_audio', 12:'p12_audio',
+  13:'p13_audio', 14:'p14_audio',
+};
+
+const BUFFER_MS = 300;
+let sequenceQueue = [];
+
+function playAudio(key) {
+  const keys = AUDIO[key]; if (!keys || !keys.length) return;
+  stopAudio(); sequenceQueue = [...keys]; playNextInSequence();
+}
+function playNextInSequence() {
+  if (!sequenceQueue.length) return;
+  const urlKey = sequenceQueue.shift();
+  const src = AUDIO_URLS[urlKey]; if (!src) { playNextInSequence(); return; }
+  currentAudio = new Audio(src);
+  currentAudio.addEventListener('ended', () => {
+    currentAudio = null;
+    if (sequenceQueue.length > 0) audioTimeoutId = setTimeout(playNextInSequence, BUFFER_MS);
+  });
+  currentAudio.play().catch(e => console.warn('Audio:', e));
+}
+function stopAudio() {
+  sequenceQueue = [];
+  if (audioTimeoutId) { clearTimeout(audioTimeoutId); audioTimeoutId = null; }
+  if (currentAudio)   { currentAudio.pause(); currentAudio.currentTime = 0; currentAudio = null; }
+}
+
+/* ════ NAVIGATION ════ */
+let currentPage = 1;
+
+async function startLesson() {
+  await initTone(); playTransition(); stopAudio();
+  document.getElementById('page1').classList.remove('active');
+  currentPage = 2;
+  document.getElementById('page2').classList.add('active');
+}
+function goToPage(n) {
+  playTransition(); stopAudio();
+  document.getElementById('page' + currentPage).classList.remove('active');
+  currentPage = n;
+  document.getElementById('page' + n).classList.add('active');
+  const key = PAGE_AUDIO_KEY[n];
+  if (key) audioTimeoutId = setTimeout(() => playAudio(key), 500);
+}
+function goToOutro() {
+  stopAudio(); playLessonComplete(); triggerLessonComplete();
+  document.getElementById('page' + currentPage).classList.remove('active');
+  currentPage = 15;
+  document.getElementById('page15').classList.add('active');
+}
+function showHint(page) {
+  const btn  = document.getElementById('p' + page + 'HintBtn');
+  const text = document.getElementById('p' + page + 'HintText');
+  if (btn)  btn.style.visibility = 'hidden';
+  if (text) text.classList.add('visible');
+}
+function triggerLessonComplete() { window.parent.postMessage({ type: 'lesson_complete' }, '*'); }
+
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopAudio(); });
+window.addEventListener('pagehide',     () => stopAudio());
+window.addEventListener('beforeunload', () => stopAudio());
+
+/* ════ MCQ ════
+   p3=2, p4=3, p5=2, p6=3, p7=2, p8=3, p9=1, p10=2, p11=3, p12=1, p14=3
+*/
+const MCQ_ANSWERS = { 3:2, 4:3, 5:2, 6:3, 7:2, 8:3, 9:1, 10:2, 11:3, 12:1, 14:3 };
+const MCQ_SOLVED  = new Set();
+
+function checkMCQ(page, btn, chosen) {
+  if (MCQ_SOLVED.has(page)) return;
+  const correct    = MCQ_ANSWERS[page];
+  const optionsEl  = document.getElementById('p' + page + 'Options');
+  const feedbackEl = document.getElementById('p' + page + 'Feedback');
+  if (chosen === correct) {
+    MCQ_SOLVED.add(page);
+    btn.classList.add('correct');
+    optionsEl.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    feedbackEl.textContent = '✓ Correct !';
+    feedbackEl.className = 'feedback good show';
+    playSFX('sfx_correct');
+    const revealEl = document.getElementById('p' + page + 'RevealText');
+    if (revealEl) revealEl.style.visibility = 'visible';
+    if (page === 14) { document.getElementById('p14Next').disabled = false; }
+    else             { document.getElementById('p' + page + 'Next').disabled = false; }
+  } else {
+    btn.classList.add('wrong');
+    feedbackEl.textContent = '✗ Réessayez !';
+    feedbackEl.className = 'feedback show';
+    playSFX('sfx_wrong');
+    setTimeout(() => {
+      btn.classList.remove('wrong');
+      feedbackEl.textContent = '';
+      feedbackEl.classList.remove('show');
+    }, 700);
+  }
+}
+
+/* ════ MATCHING ════ */
+const MATCH_PAIRS = [
+  { kr: '보고서',  fr: 'rapport'                      },
+  { kr: '제출하다', fr: 'soumettre'                    },
+  { kr: '마감',    fr: 'délai'                        },
+  { kr: '바쁘다',  fr: 'être occupée'                 },
+  { kr: '야근하다', fr: 'faire des heures supplémentaires' },
+  { kr: '다행이다', fr: 'être soulagé'                 },
+];
+let matchState = { selectedKR: null, selectedFR: null, matchedCount: 0 };
+
+function initMatchPage() {
+  matchState = { selectedKR: null, selectedFR: null, matchedCount: 0 };
+  const krCol = document.getElementById('krCol');
+  const frCol = document.getElementById('frCol');
+  krCol.innerHTML = ''; frCol.innerHTML = '';
+  const frShuffled = [...MATCH_PAIRS].sort(() => Math.random() - 0.5);
+  MATCH_PAIRS.forEach(pair => {
+    const el = document.createElement('div');
+    el.className = 'match-item kr';
+    el.textContent = pair.kr; el.dataset.value = pair.kr;
+    el.addEventListener('click', () => selectMatchItem('kr', el));
+    krCol.appendChild(el);
+  });
+  frShuffled.forEach(pair => {
+    const el = document.createElement('div');
+    el.className = 'match-item fr';
+    el.textContent = pair.fr; el.dataset.value = pair.fr;
+    el.addEventListener('click', () => selectMatchItem('fr', el));
+    frCol.appendChild(el);
+  });
+}
+
+function selectMatchItem(side, el) {
+  if (el.classList.contains('matched')) return;
+  if (side === 'kr') {
+    if (matchState.selectedKR) matchState.selectedKR.classList.remove('selected');
+    el.classList.add('selected'); matchState.selectedKR = el;
+  } else {
+    if (matchState.selectedFR) matchState.selectedFR.classList.remove('selected');
+    el.classList.add('selected'); matchState.selectedFR = el;
+  }
+  if (matchState.selectedKR && matchState.selectedFR) {
+    const krVal = matchState.selectedKR.dataset.value;
+    const frVal = matchState.selectedFR.dataset.value;
+    const pair  = MATCH_PAIRS.find(p => p.kr === krVal);
+    if (pair && pair.fr === frVal) {
+      matchState.selectedKR.classList.remove('selected'); matchState.selectedKR.classList.add('matched');
+      matchState.selectedFR.classList.remove('selected'); matchState.selectedFR.classList.add('matched');
+      matchState.selectedKR = null; matchState.selectedFR = null;
+      playSFX('sfx_correct');
+      matchState.matchedCount++;
+      if (matchState.matchedCount === MATCH_PAIRS.length) {
+        if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");
+        document.getElementById('matchFeedback').textContent = '✓ Parfait, tout est correct !';
+        document.getElementById('matchFeedback').className = 'feedback good show';
+        document.getElementById('p2Next').disabled = false;
+      }
+    } else {
+      matchState.selectedKR.classList.add('wrong-flash');
+      matchState.selectedFR.classList.add('wrong-flash');
+      playSFX('sfx_wrong');
+      const kr = matchState.selectedKR, fr = matchState.selectedFR;
+      matchState.selectedKR = null; matchState.selectedFR = null;
+      setTimeout(() => { kr.classList.remove('wrong-flash','selected'); fr.classList.remove('wrong-flash','selected'); }, 600);
+    }
+  }
+}
+
+/* ════ FILL IN THE BLANKS (PAGE 13) ════
+   김 대리님, 이 보고서 [0] 끝내야 [1] 도와줄 수 있어요? → 빨리 / 하는데
+   지금 좀 바쁜[2]. 마감이 언제예요?                    → 데요
+   내일 아침 아홉 시[3].                                → 까지예요
+   그럼 제가 점심 시간 [4] 도와드릴게요.                 → 후에
+   정말요? 고마워요. 야근해야 할 것 [5] 다행이에요.      → 같았는데
+   같이 빨리 [6].                                       → 끝내요
+*/
+const FILL_BLANKS    = ['빨리','하는데','데요','까지예요','후에','같았는데','끝내요'];
+const WORD_BANK_WORDS = ['끊나요','되요','하는데','빤리','훼','같는데','가치예요','가탔는데','빨리','데요','까지예요','까지요','후에','같았는데','한은데','끝내요','하면돼','빤니','돼요','후애','끈내요'];
+const FILL_SEGMENTS  = [
+  { text: '김 대리님, 이 보고서 ' }, { blank: 0 }, { text: ' 끝내야 ' }, { blank: 1 }, { text: ' 도와줄 수 있어요?' },
+  { br: true },
+  { text: '지금 좀 바쁜' }, { blank: 2 }, { text: '. 마감이 언제예요?' },
+  { br: true },
+  { text: '내일 아침 아홉 시' }, { blank: 3 }, { text: '.' },
+  { br: true },
+  { text: '그럼 제가 점심 시간 ' }, { blank: 4 }, { text: ' 도와드릴게요.' },
+  { br: true },
+  { text: '정말요? 고마워요. 야근해야 할 것 ' }, { blank: 5 }, { text: ' 다행이에요.' },
+  { br: true },
+  { text: '같이 빨리 ' }, { blank: 6 }, { text: '.' },
+];
+
+let fillAnswers   = new Array(7).fill(null);
+let fillValidated = new Array(7).fill(false);
+let selectedBlank = null;
+
+function initFillPage() {
+  fillAnswers   = new Array(7).fill(null);
+  fillValidated = new Array(7).fill(false);
+  selectedBlank = null;
+  renderFillSentence(); renderWordBank();
+  document.getElementById('p13Feedback').textContent = '';
+}
+
+function renderFillSentence() {
+  const container = document.getElementById('fillSentence');
+  container.innerHTML = '';
+  FILL_SEGMENTS.forEach(seg => {
+    if (seg.br) {
+      container.appendChild(document.createElement('br'));
+    } else if (seg.text !== undefined) {
+      container.appendChild(document.createTextNode(seg.text));
+    } else {
+      const idx  = seg.blank;
+      const slot = document.createElement('span');
+      slot.dataset.idx = idx;
+      slot.style.width = Math.max(1.8, FILL_BLANKS[idx].length * 1.6) + 'em';
+      if (fillValidated[idx]) {
+        slot.className = 'blank-slot correct'; slot.textContent = fillAnswers[idx];
+      } else if (fillAnswers[idx]) {
+        slot.className = 'blank-slot filled' + (idx === selectedBlank ? ' selected-blank' : '');
+        slot.textContent = fillAnswers[idx];
+        slot.addEventListener('click', () => { fillAnswers[idx] = null; selectedBlank = idx; renderFillSentence(); renderWordBank(); });
+      } else {
+        slot.className = 'blank-slot' + (idx === selectedBlank ? ' selected-blank' : '');
+        slot.textContent = '';
+        slot.addEventListener('click', () => { selectedBlank = idx; renderFillSentence(); renderWordBank(); });
+      }
+      container.appendChild(slot);
+    }
+  });
+}
+
+function renderWordBank() {
+  const bank = document.getElementById('wordBank');
+  bank.innerHTML = '';
+  WORD_BANK_WORDS.forEach(word => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip'; chip.textContent = word;
+    if (fillAnswers.includes(word)) { chip.classList.add('used'); }
+    else { chip.addEventListener('click', () => placeWord(word)); }
+    bank.appendChild(chip);
+  });
+}
+
+function placeWord(word) {
+  if (selectedBlank === null) {
+    const first = fillAnswers.findIndex((a, i) => a === null && !fillValidated[i]);
+    if (first === -1) return;
+    selectedBlank = first;
+  }
+  if (fillValidated[selectedBlank]) return;
+  fillAnswers[selectedBlank] = word;
+  if (word === FILL_BLANKS[selectedBlank]) {
+    fillValidated[selectedBlank] = true;
+    playSFX('sfx_correct');
+    let next = fillAnswers.findIndex((a, i) => i > selectedBlank && !fillValidated[i] && a === null);
+    if (next === -1) next = fillAnswers.findIndex((a, i) => !fillValidated[i] && a === null);
+    selectedBlank = next === -1 ? null : next;
+    if (fillValidated.every(v => v)) {
+      if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5"], "8n");
+      document.getElementById('p13Feedback').textContent = '✓ Excellent, tout est correct !';
+      document.getElementById('p13Feedback').className = 'feedback good show';
+      document.getElementById('p13Next').disabled = false;
+      selectedBlank = null;
+    }
+    renderFillSentence(); renderWordBank();
+  } else {
+    renderFillSentence(); renderWordBank();
+    playSFX('sfx_wrong');
+    setTimeout(() => {
+      for (let i = 0; i < fillAnswers.length; i++) {
+        if (fillAnswers[i] === word && !fillValidated[i]) { fillAnswers[i] = null; break; }
+      }
+      renderFillSentence(); renderWordBank();
+    }, 700);
+  }
+}
+
+/* ════ INIT ════ */
+initMatchPage();
+initFillPage();
+</script>
+</body>
+</html>
