@@ -176,14 +176,6 @@
   .word-chip:hover { background: var(--green-pale); border-color: var(--green-light); }
   .word-chip.used  { opacity: 0.3; cursor: default; pointer-events: none; }
 
-  /* PAGE 13 — 빈칸 채우기 축소 (6줄 + 워드뱅크) */
-  #page13 .consigne { margin-bottom: 0.6vh; }
-  #page13 .card { padding: 1.2vh 4vw; margin-bottom: 1vh; }
-  #page13 .fill-sentence { font-size: clamp(0.8rem, 1.6vw, 1.05rem); line-height: 2.0; margin-bottom: 0.8vh; }
-  #page13 .word-bank { gap: 0.6vh 1vw; }
-  #page13 .word-chip { font-size: clamp(0.75rem, 1.4vw, 0.95rem); padding: 0.45vh 1.4vw; }
-  #page13 .feedback { margin-top: 0.4vh; height: 2vh; }
-
   #page15 { gap: 2.5vh; text-align: center; padding: 4vh 6vw; }
   .outro-emoji { font-size: clamp(2.5rem, 8vw, 6rem); flex-shrink: 0; }
   .outro-title { font-size: clamp(1.3rem, 3.5vw, 2.5rem); font-weight: 900; color: var(--green-dark); line-height: 1.2; }
@@ -535,12 +527,15 @@
   <!-- PAGE 15 — OUTRO -->
   <div class="page" id="page15">
     <div class="outro-emoji">🎉</div>
-    <div class="outro-title">Bravo, tu as terminé la leçon 19 !</div>
+    <div class="outro-title">Bravo, tu as terminé TOUTES les leçons !</div>
     <div class="divider"></div>
-    <div class="outro-body">
-      Ouvrir un compte, demander une carte...<br>
-      tu gères maintenant des démarches administratives en coréen !<br><br>
-      Il ne vous reste plus qu'un seul défi ! 화이팅 ! 💪
+    <div class="outro-body" style="font-family:'Noto Sans KR','Nunito',sans-serif;">
+      2강부터 19강까지, 총 18개의 이야기를 한국어로 듣고 이해했네요.<br>
+      지난 3주 (ou plus) 동안 매일 한국어를 들으면서<br>
+      너의 한국어 실력도 자연스럽게 성장했을 거예요.<br><br>
+      이번 프로그램을 수강하면서 어려웠던 점이나 부족한 점을 발견했다면<br>
+      CoréenO 에서 그 부분을 채워줄 수 있는 다른 프로그램을 선택해 수강해 보세요.<br><br>
+      그럼 지금까지 수고했어요. 다음에 또 만나요, 안녕!
     </div>
   </div>
 
@@ -677,7 +672,7 @@ window.addEventListener('beforeunload', () => stopAudio());
 /* ════ MCQ ════
    p3=2, p4=1, p5=2, p6=2, p7=3, p8=2, p9=3, p10=1, p11=3, p12=3, p14=3
 */
-const MCQ_ANSWERS = { 3:2, 4:1, 5:2, 6:2, 7:3, 8:2, 9:3, 10:1, 11:3, 12:3, 14:3 };
+const MCQ_ANSWERS = { 3:2, 4:1, 5:2, 6:2, 7:3, 8:2, 9:3, 10:1, 11:1, 12:3, 14:3 };
 const MCQ_SOLVED  = new Set();
 
 function checkMCQ(page, btn, chosen) {
