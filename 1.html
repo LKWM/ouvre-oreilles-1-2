@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 1 - Introduction</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  :root {
+    --green-dark:   #1a5c3a;
+    --green-mid:    #2d8653;
+    --green-light:  #4caf80;
+    --green-pale:   #d4f0e2;
+    --green-card:   #eaf8f1;
+    --accent:       #f5a623;
+    --accent2:      #ff6b6b;
+    --text-dark:    #1a2e25;
+    --text-mid:     #3a5c46;
+    --text-light:   #7aaa8f;
+    --border:       #b8dfc9;
+    --shadow:       rgba(45,134,83,0.15);
+    --radius:       1.2vw;
+    --radius-sm:    0.7vw;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #e8f8f0 0%, #c8eedd 50%, #d8f4e8 100%);
+    color: var(--text-dark);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #lesson {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+
+  .page {
+    display: none; width: 100%; height: 100%;
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 3vh 6vw;
+  }
+  .page.active { display: flex; }
+  .page.has-bar { padding-bottom: 0; }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2vh 3vw;
+    background: rgba(255,255,255,0.7);
+    border-top: 0.15vh solid var(--border);
+    flex-shrink: 0;
+  }
+  .bottom-bar .nav-btn {
+    background: var(--green-mid); color: #fff; border: none;
+    border-radius: var(--radius-sm); padding: 1vh 4vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    font-weight: 700; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .bottom-bar .nav-btn:hover { background: var(--green-dark); transform: scale(1.04); }
+  .bottom-bar .nav-btn:disabled { background: #b8dfc9; cursor: not-allowed; transform: none; opacity: 0.5; }
+  .bottom-bar .page-indicator { font-size: clamp(0.85rem, 1.8vw, 1.1rem); color: var(--text-mid); font-weight: 700; }
+
+  .page-content {
+    flex: 1; width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; overflow: hidden;
+  }
+
+  /* ── INTRO ── */
+  #page1 { gap: 2.5vh; }
+  .intro-deco {
+    width: clamp(4rem, 12vw, 8rem); height: clamp(4rem, 12vw, 8rem);
+    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: clamp(2rem, 6vw, 4rem); box-shadow: 0 0.5vh 2vh var(--shadow); flex-shrink: 0;
+  }
+  .lesson-label {
+    font-size: clamp(0.8rem, 1.8vw, 1.1rem); font-weight: 800;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--green-light); text-align: center;
+  }
+  .lesson-title {
+    font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 900;
+    color: var(--green-dark); text-align: center; line-height: 1.15;
+  }
+  .start-btn {
+    margin-top: 1vh;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: #fff; border: none; border-radius: var(--radius); padding: 1.8vh 8vw;
+    font-family: 'Nunito', sans-serif; font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: 800; letter-spacing: 0.06em; cursor: pointer;
+    box-shadow: 0 0.5vh 1.8vh var(--shadow); transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0.8vh 2.5vh rgba(45,134,83,0.3); }
+
+  /* ── CONTENT PAGES ── */
+  .content-card {
+    background: rgba(255,255,255,0.7); border: 0.15vh solid var(--border);
+    border-radius: var(--radius); padding: 3vh 4vw;
+    width: 100%; max-width: 80vw;
+    box-shadow: 0 0.4vh 1.5vh var(--shadow);
+    display: flex; flex-direction: column; gap: 1.8vh;
+    overflow: hidden;
+  }
+  .content-title {
+    font-size: clamp(1.1rem, 2.5vw, 1.7rem); font-weight: 900;
+    color: var(--green-dark); line-height: 1.2;
+    padding-bottom: 1.2vh; border-bottom: 0.2vh solid var(--green-pale);
+  }
+  .content-body {
+    font-size: clamp(0.9rem, 1.8vw, 1.15rem); font-weight: 600;
+    color: var(--text-dark); line-height: 1.9;
+  }
+  .content-body p { margin-bottom: 1vh; }
+  .content-body p:last-child { margin-bottom: 0; }
+  .week-block {
+    background: var(--green-pale); border-radius: var(--radius-sm);
+    padding: 1vh 2vw; margin-bottom: 0.8vh;
+  }
+  .week-block:last-child { margin-bottom: 0; }
+  .week-label {
+    font-size: clamp(0.85rem, 1.6vw, 1rem); font-weight: 800;
+    color: var(--green-mid); margin-bottom: 0.3vh;
+  }
+  .week-desc {
+    font-size: clamp(0.85rem, 1.6vw, 1rem); font-weight: 600;
+    color: var(--text-dark); line-height: 1.7;
+  }
+  .step-list { display: flex; flex-direction: column; gap: 0.8vh; }
+  .step-item {
+    display: flex; gap: 1.5vw; align-items: flex-start;
+  }
+  .step-num {
+    background: var(--green-mid); color: #fff;
+    border-radius: 50%; width: clamp(1.4rem, 3vw, 2rem); height: clamp(1.4rem, 3vw, 2rem);
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(0.75rem, 1.4vw, 0.95rem); font-weight: 900;
+    flex-shrink: 0; margin-top: 0.1em;
+  }
+  .step-text {
+    font-size: clamp(0.85rem, 1.6vw, 1rem); font-weight: 600;
+    color: var(--text-dark); line-height: 1.7;
+  }
+  .step-text strong { color: var(--green-dark); font-weight: 800; }
+
+  /* ── LAST PAGE ── */
+  #page7 { gap: 2.5vh; text-align: center; padding: 4vh 6vw; }
+  .outro-emoji { font-size: clamp(2.5rem, 8vw, 6rem); flex-shrink: 0; }
+  .outro-title { font-size: clamp(1.3rem, 3.5vw, 2.5rem); font-weight: 900; color: var(--green-dark); line-height: 1.2; }
+  .outro-body { font-size: clamp(0.9rem, 2vw, 1.2rem); font-weight: 600; color: var(--text-mid); line-height: 1.9; max-width: 72vw; text-align: center; }
+
+  .divider { width: 4vw; height: 0.3vh; background: var(--green-light); border-radius: 1vw; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div id="lesson">
+
+  <!-- PAGE 1 — INTRO (no bottom bar) -->
+  <div class="page active" id="page1">
+    <div class="intro-deco">🎧</div>
+    <div class="lesson-label">Ouvre tes oreilles : de niveau 1 à niveau 2</div>
+    <div class="lesson-title">Leçon 1<br>Introduction</div>
+    <div class="divider"></div>
+    <button class="start-btn" onclick="startLesson()">Commencer</button>
+  </div>
+
+  <!-- PAGE 2 — Bienvenue -->
+  <div class="page has-bar" id="page2">
+    <div class="page-content">
+      <div class="content-card">
+        <div class="content-title">👋 Bienvenue !</div>
+        <div class="content-body">
+          <p>« Ouvre tes oreilles : de niveau 1 à niveau 2 » est un programme d'entraînement à la compréhension orale, la compétence que les apprenants trouvent le plus difficile lors du passage du niveau 1 au niveau 2.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" id="p2Prev" disabled>◀ Précédent</button>
+      <span class="page-indicator">2 / 7</span>
+      <button class="nav-btn" onclick="goToPage(3)">Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3 — À qui s'adresse ce programme ? -->
+  <div class="page has-bar" id="page3">
+    <div class="page-content">
+      <div class="content-card">
+        <div class="content-title">🎯 À qui s'adresse ce programme ?</div>
+        <div class="content-body">
+          <p>Ce programme est conçu pour les apprenants qui révisent le niveau 1 tout en passant au niveau 2.</p>
+          <p>Il convient tout particulièrement à ceux qui ont commencé à étudier la grammaire de niveau 2 — c'est-à-dire à l'étape où ils s'entraînent à utiliser différents temps et des propositions subordonnées.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(2)">◀ Précédent</button>
+      <span class="page-indicator">3 / 7</span>
+      <button class="nav-btn" onclick="goToPage(4)">Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 4 — Organisation du programme -->
+  <div class="page has-bar" id="page4">
+    <div class="page-content">
+      <div class="content-card">
+        <div class="content-title">📅 Organisation du programme</div>
+        <div class="content-body">
+          <p>Ce programme s'étend sur 3 semaines au total.</p>
+          <div class="week-block">
+            <div class="week-label">Semaine 1</div>
+            <div class="week-desc">Des fichiers audio courts et simples de niveau 1 pour s'habituer à l'entraînement à l'écoute</div>
+          </div>
+          <div class="week-block">
+            <div class="week-label">Semaine 2</div>
+            <div class="week-desc">Des éléments de grammaire de niveau 2 apparaissent progressivement, avec des phrases courtes et un vocabulaire simple pour faciliter votre adaptation</div>
+          </div>
+          <div class="week-block">
+            <div class="week-label">Semaine 3</div>
+            <div class="week-desc">Le niveau 2 du TOPIK, avec des expressions naturelles et des contenus utilisables dans la vie quotidienne</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(3)">◀ Précédent</button>
+      <span class="page-indicator">4 / 7</span>
+      <button class="nav-btn" onclick="goToPage(5)">Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 5 — Organisation de chaque leçon -->
+  <div class="page has-bar" id="page5">
+    <div class="page-content">
+      <div class="content-card">
+        <div class="content-title">📖 Organisation de chaque leçon</div>
+        <div class="content-body">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-text"><strong>Quiz de vocabulaire</strong> : associer chaque mot coréen à sa traduction française</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-text"><strong>Compréhension globale</strong> : écouter le fichier divisé en 2 à 3 parties et identifier le thème général de chaque partie</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-text"><strong>Compréhension détaillée</strong> : écouter chaque phrase attentivement et en saisir le sens précis</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-text"><strong>Dictée à trous</strong> : écouter l'enregistrement et compléter les blancs — vocabulaire, grammaire et compréhension orale combinés</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">5</div>
+              <div class="step-text"><strong>Réécoute</strong> : lire les phrases en coréen et choisir l'affirmation correcte</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(4)">◀ Précédent</button>
+      <span class="page-indicator">5 / 7</span>
+      <button class="nav-btn" onclick="goToPage(6)">Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 6 — Avant de commencer (1) -->
+  <div class="page has-bar" id="page6">
+    <div class="page-content">
+      <div class="content-card">
+        <div class="content-title">💡 Avant de commencer…</div>
+        <div class="content-body">
+          <p>Ce programme n'est pas un cours de grammaire ou de vocabulaire.</p>
+          <p>Ne vous mettez pas la pression pour tout terminer en 3 semaines. Si vous trouvez quelque chose d'inconnu ou d'incompris, n'hésitez pas à vous rendre dans un dictionnaire ou aux cours tagués « grammaire » sur CoréenO — étudier à votre rythme et en profondeur est la meilleure façon de progresser.</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-bar">
+      <button class="nav-btn" onclick="goToPage(5)">◀ Précédent</button>
+      <span class="page-indicator">6 / 7</span>
+      <button class="nav-btn" onclick="goToFinal()">Suivant ▶</button>
+    </div>
+  </div>
+
+  <!-- PAGE 7 — closing (no bottom bar) -->
+  <div class="page" id="page7">
+    <div class="outro-emoji">📬</div>
+    <div class="outro-body">
+      Si vous avez des questions ou si CoréenO n'a pas encore de cours sur un sujet que vous trouvez,<br>
+      cliquez sur « Envoyer un message » sur la page d'accueil pour contacter l'équipe de contenu.<br><br>
+      Alors, bonne étude et on se voit dans la leçon 2 ! 🎉
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ════ TONE.JS ════ */
+let completionSynth = null, transitionSynth = null;
+let toneReady = false;
+
+async function initTone() {
+  if (toneReady) return;
+  await Tone.start();
+  completionSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+  transitionSynth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
+  }).toDestination();
+  transitionSynth.volume.value = -15;
+  toneReady = true;
+}
+
+function playTransition() { if (toneReady && transitionSynth) transitionSynth.triggerAttackRelease('C6', '0.05s'); }
+function playLessonComplete() { if (toneReady && completionSynth) completionSynth.triggerAttackRelease(["C5","E5","G5","C6"], "4n"); }
+function triggerLessonComplete() { window.parent.postMessage({ type: 'lesson_complete' }, '*'); }
+
+/* ════ NAVIGATION ════ */
+let currentPage = 1;
+
+async function startLesson() {
+  await initTone();
+  playTransition();
+  document.getElementById('page1').classList.remove('active');
+  currentPage = 2;
+  document.getElementById('page2').classList.add('active');
+}
+
+function goToPage(n) {
+  playTransition();
+  document.getElementById('page' + currentPage).classList.remove('active');
+  currentPage = n;
+  document.getElementById('page' + n).classList.add('active');
+}
+
+function goToFinal() {
+  playLessonComplete();
+  triggerLessonComplete();
+  document.getElementById('page' + currentPage).classList.remove('active');
+  currentPage = 7;
+  document.getElementById('page7').classList.add('active');
+}
+</script>
+</body>
+</html>
